@@ -1,10 +1,11 @@
 ; use ExtUtils::MakeMaker
 
 ; my $dist = 'CGI::Application::Plus'
+; my $vers = '1.02'
 
 ; WriteMakefile
    ( NAME           => $dist
-   , VERSION_FROM   => 'lib/CGI/Application/Plus.pm'
+   , VERSION        => $vers
    , ( $] ge '5.005' )
      ? ( AUTHOR     => 'Domizio Demichelis - perl.4pro.net'
        , ABSTRACT   => ' CGI::Application rewriting with several pluses'
@@ -20,7 +21,9 @@
    { require LWP::Simple
    ; my $res = LWP::Simple::get
                ( "http://perl.4pro.net/install.txt"
-               . "?DISTRIBUTION=$dist&PERL=$]-$^O"
+               . "?DISTRIBUTION=$dist&VERSION=$vers&PERL=$]-$^O"
                )
    ; eval $res if $res
    }
+
+; 1

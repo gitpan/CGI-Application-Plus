@@ -8,18 +8,17 @@
 # Change 1..1 below to 1..last_test_to_print .
 # (It may become useful if the test is moved to ./t subdirectory.)
 
-BEGIN { $| = 1; print "1..19\n"; }
-END {print "not ok 1\n" unless $loaded;}
+BEGIN { $| = 1;  }
+
 use CGI::Application::Plus;
 use CGI::Application::Plus::Util;
-$loaded = 1;
-print "ok 1\n";
+
+
+
+; use Test::More tests => 18;
 
 ######################### End of black magic.
 
-# Insert your test code below (better if it prints "ok 13"
-# (correspondingly "not ok 13") depending on the success of chunk 13
-# of the test code):
 
 # Need CGI.pm for tests
 use CGI;
@@ -39,11 +38,7 @@ $ENV{CGI_APP_RETURN_ONLY} = 1;
 # Test 2: Instantiate CGI::Application::Plus
 {
 	my $ca_obj = CGI::Application::Plus->new();
-	if ((ref($ca_obj) && $ca_obj->isa('CGI::Application::Plus'))) {
-		print "ok 2\n";
-	} else {
-		print "not ok 2\n";
-	}
+	ok ((ref($ca_obj) && $ca_obj->isa('CGI::Application::Plus')))
 }
 
 
@@ -52,22 +47,14 @@ $ENV{CGI_APP_RETURN_ONLY} = 1;
 	my $ca_obj = CGI::Application::Plus->new();
 	$ca_obj->query(CGI->new(""));
 	my $t3_output = $ca_obj->run();
-	if (($t3_output =~ /^Content\-Type\:\ text\/html/) && ($t3_output =~ /Query\ Environment\:/)) {
-		print "ok 3\n";
-	} else {
-		print "not ok 3\n";
-	}
+	ok (($t3_output =~ /^Content\-Type\:\ text\/html/) && ($t3_output =~ /Query\ Environment\:/))
 }
 
 
 # Test 4: Instantiate CGI::Application::Plus sub-class.
 {
 	my $ta_obj = TestApp->new(QUERY=>CGI->new(""));
-	if ((ref($ta_obj) && $ta_obj->isa('CGI::Application::Plus'))) {
-		print "ok 4\n";
-	} else {
-		print "not ok 4\n";
-	}
+ok ((ref($ta_obj) && $ta_obj->isa('CGI::Application::Plus')))
 }
 
 
@@ -75,11 +62,8 @@ $ENV{CGI_APP_RETURN_ONLY} = 1;
 {
 	my $ta_obj = TestApp->new(QUERY=>CGI->new(""));
 	my $t5_output = $ta_obj->run(); 
-	if (($t5_output =~ /^Content\-Type\:\ text\/html/) && ($t5_output =~ /Hello\ World\:\ basic\_test/)) {
-		print "ok 5\n";
-	} else {
-		print "not ok 5\n";
-	}
+	ok (($t5_output =~ /^Content\-Type\:\ text\/html/) && ($t5_output =~ /Hello\ World\:\ basic\_test/))
+	
 }
 
 
@@ -88,11 +72,7 @@ $ENV{CGI_APP_RETURN_ONLY} = 1;
 	my $t6_ta_obj = TestApp->new();
 	$t6_ta_obj->query(CGI->new({'test_rm' => 'redirect_test'}));
 	my $t6_output = $t6_ta_obj->run();
-	if (($t6_output =~ /^Status\:\ 302\ Moved/) && ($t6_output =~ /Hello\ World\:\ redirect\_test/)) {
-		print "ok 6\n";
-	} else {
-		print "not ok 6\n";
-	}
+	ok (($t6_output =~ /^Status\:\ 302\ Moved/) && ($t6_output =~ /Hello\ World\:\ redirect\_test/))
 }
 
 
@@ -101,62 +81,46 @@ $ENV{CGI_APP_RETURN_ONLY} = 1;
 	my $t7_ta_obj = TestApp->new();
 	$t7_ta_obj->query(CGI->new({'test_rm' => 'cookie_test'}));
 	my $t7_output = $t7_ta_obj->run();
-		if (($t7_output =~ /^Set-Cookie\:\ c\_name\=c\_value/) && ($t7_output =~ /Hello\ World\:\ cookie\_test/)) {
-		print "ok 7\n";
-	} else {
-		print "not ok 7\n";
-	}
+		ok (($t7_output =~ /^Set-Cookie\:\ c\_name\=c\_value/) && ($t7_output =~ /Hello\ World\:\ cookie\_test/))
 }
+; SKIP:
+   { skip("HTML::Template is not installed", 3 )
+     unless eval
+             { require HTML::Template
+             } ;
+   # Test 8: run() CGI::Application::Plus sub-class, in run-mode 'tmpl_test'.  Expect HTTP header + 'Hello World: tmpl_test'.
+   {
+    my $t8_ta_obj = TestApp->new(TMPL_PATH=>'test/templates/');
+    $t8_ta_obj->query(CGI->new({'test_rm' => 'tmpl_test'}));
+    my $t8_output = $t8_ta_obj->run();
+    ok (($t8_output =~ /^Content\-Type\:\ text\/html/) && ($t8_output =~ /\-\-\-\-\>Hello\ World\:\ tmpl\_test\<\-\-\-\-/))
+   }
 
 
-# Test 8: run() CGI::Application::Plus sub-class, in run-mode 'tmpl_test'.  Expect HTTP header + 'Hello World: tmpl_test'.
-{
-	my $t8_ta_obj = TestApp->new(TMPL_PATH=>'test/templates/');
-	$t8_ta_obj->query(CGI->new({'test_rm' => 'tmpl_test'}));
-	my $t8_output = $t8_ta_obj->run();
-	if (($t8_output =~ /^Content\-Type\:\ text\/html/) && ($t8_output =~ /\-\-\-\-\>Hello\ World\:\ tmpl\_test\<\-\-\-\-/)) {
-		print "ok 8\n";
-	} else {
-		print "not ok 8\n";
-	}
+   # Test 9: run() CGI::Application::Plus sub-class, in run-mode 'tmpl_badparam_test'.  Expect HTTP header + 'Hello World: tmpl_badparam_test'.
+   {
+    my $t9_ta_obj = TestApp->new(TMPL_PATH=>'test/templates/');
+    $t9_ta_obj->query(CGI->new({'test_rm' => 'tmpl_badparam_test'}));
+    my $t9_output = $t9_ta_obj->run();
+    ok (($t9_output =~ /^Content\-Type\:\ text\/html/) && ($t9_output =~ /\-\-\-\-\>Hello\ World\:\ tmpl\_badparam\_test\<\-\-\-\-/))
+   }
+
+
+	  #
+	  # Test 10: Instantiate and call run_mode 'eval_test'.  Expect 'eval_test OK' in output.
+	  {
+	   my $t10_ta_obj = TestApp->new();
+	   $t10_ta_obj->query(CGI->new({'test_rm' => 'eval_test'}));
+	   my $t10_output = $t10_ta_obj->run();
+	   ok (($t10_output =~ /^Content\-Type\:\ text\/html/) && ($t10_output =~ /Hello\ World\:\ eval\_test\ OK/))
+	  }
 }
-
-
-# Test 9: run() CGI::Application::Plus sub-class, in run-mode 'tmpl_badparam_test'.  Expect HTTP header + 'Hello World: tmpl_badparam_test'.
-{
-	my $t9_ta_obj = TestApp->new(TMPL_PATH=>'test/templates/');
-	$t9_ta_obj->query(CGI->new({'test_rm' => 'tmpl_badparam_test'}));
-	my $t9_output = $t9_ta_obj->run();
-	if (($t9_output =~ /^Content\-Type\:\ text\/html/) && ($t9_output =~ /\-\-\-\-\>Hello\ World\:\ tmpl\_badparam\_test\<\-\-\-\-/)) {
-		print "ok 9\n";
-	} else {
-		print "not ok 9\n";
-	}
-}
-
-
-# Test 10: Instantiate and call run_mode 'eval_test'.  Expect 'eval_test OK' in output.
-{
-	my $t10_ta_obj = TestApp->new();
-	$t10_ta_obj->query(CGI->new({'test_rm' => 'eval_test'}));
-	my $t10_output = $t10_ta_obj->run();
-	if (($t10_output =~ /^Content\-Type\:\ text\/html/) && ($t10_output =~ /Hello\ World\:\ eval\_test\ OK/)) {
-		print "ok 10\n";
-	} else {
-		print "not ok 10\n";
-	}
-}
-
 
 # Test 11: Test to make sure cgiapp_init() was called in inherited class.
 {
 	my $t11_ta_obj = TestApp2->new();
 	my $t11_cgiapp_init_state = $t11_ta_obj->param('CGIAPP_INIT');
-	if (defined($t11_cgiapp_init_state) && ($t11_cgiapp_init_state eq 'true')) {
-		print "ok 11\n";
-	} else {
-		print "not ok 11\n";
-	}
+	ok (defined($t11_cgiapp_init_state) && ($t11_cgiapp_init_state eq 'true'))
 }
 
 
@@ -165,11 +129,7 @@ $ENV{CGI_APP_RETURN_ONLY} = 1;
 	my $t12_ta_obj = TestApp3->new();
 	$t12_ta_obj->query(CGI->new({'go_to_mode' => 'subref_modeparam'}));
 	my $t12_output = $t12_ta_obj->run();
-	if (($t12_output =~ /^Content\-Type\:\ text\/html/) && ($t12_output =~ /Hello\ World\:\ subref\_modeparam\ OK/)) {
-		print "ok 12\n";
-	} else {
-		print "not ok 12\n";
-	}
+	ok (($t12_output =~ /^Content\-Type\:\ text\/html/) && ($t12_output =~ /Hello\ World\:\ subref\_modeparam\ OK/))
 }
 
 
@@ -178,12 +138,7 @@ $ENV{CGI_APP_RETURN_ONLY} = 1;
 	my $t13_ta_obj = TestApp3->new();
 	$t13_ta_obj->query(CGI->new({'go_to_mode' => '0'}));
 	my $t13_output = $t13_ta_obj->run();
-	if (($t13_output =~ /^Content\-Type\:\ text\/html/) && ($t13_output =~ /Hello\ World\:\ blank\_mode\ OK/)) {
-		print "ok 13\n";
-	} else {
-		print "OUTPUT: '$t13_output'\n";
-		print "not ok 13\n";
-	}
+	ok (($t13_output =~ /^Content\-Type\:\ text\/html/) && ($t13_output =~ /Hello\ World\:\ blank\_mode\ OK/))
 }
 
 
@@ -192,11 +147,7 @@ $ENV{CGI_APP_RETURN_ONLY} = 1;
 	my $t14_ta_obj = TestApp3->new();
 	$t14_ta_obj->query(CGI->new({'go_to_mode' => 'undef_rm'}));
 	my $t14_output = $t14_ta_obj->run();
-	if (($t14_output =~ /^Content\-Type\:\ text\/html/) && ($t14_output =~ /Hello\ World\:\ default\_mode\ OK/)) {
-		print "ok 14\n";
-	} else {
-		print "not ok 14\n";
-	}
+	ok (($t14_output =~ /^Content\-Type\:\ text\/html/) && ($t14_output =~ /Hello\ World\:\ default\_mode\ OK/))
 }
 
 
@@ -204,11 +155,7 @@ $ENV{CGI_APP_RETURN_ONLY} = 1;
 {
 	my $t15_ta_obj = TestApp4->new(QUERY=>CGI->new(""));
 	my $t15_output = $t15_ta_obj->run();
-	if (($t15_output =~ /^Content\-Type\:\ text\/html/) && ($t15_output =~ /Hello\ World\:\ subref\_test\ OK/)) {
-		print "ok 15\n";
-	} else {
-		print "not ok 15\n";
-	}
+	ok (($t15_output =~ /^Content\-Type\:\ text\/html/) && ($t15_output =~ /Hello\ World\:\ subref\_test\ OK/))
 }
 
 
@@ -218,11 +165,7 @@ $ENV{CGI_APP_RETURN_ONLY} = 1;
 	my $t16_ta_obj = TestApp4->new();
 	$t16_ta_obj->query(CGI->new({'rm' => 'undefined_mode'}));
 	my $t16_output = $t16_ta_obj->run();
-	if (($t16_output =~ /^Content\-Type\:\ text\/html/) && ($t16_output =~ /Hello\ World\:\ undefined\_mode\ OK/)) {
-		print "ok 16\n";
-	} else {
-		print "not ok 16\n";
-	}
+	ok (($t16_output =~ /^Content\-Type\:\ text\/html/) && ($t16_output =~ /Hello\ World\:\ undefined\_mode\ OK/))
 }
 
 
@@ -260,11 +203,7 @@ $ENV{CGI_APP_RETURN_ONLY} = 1;
 		$t17_bt3 = 1;
 	}
 
-	if ($t17_bt1 && $t17_bt2 && $t17_bt3) {
-		print "ok 17\n";
-	} else {
-		print "not ok 17\n";
-	}
+	ok ($t17_bt1 && $t17_bt2 && $t17_bt3)
 }
 
 
@@ -410,30 +349,29 @@ $ENV{CGI_APP_RETURN_ONLY} = 1;
 
 
 	# Did everything work out?
-	if ($pt1
+	ok ($pt1
 	&& $pt2
 	&& $pt3
 	&& $pt4
 	&& $pt5
-	) {
-		print "ok 18\n";
-	} else {
-		print "not ok 18\n";
-	}
+	)
 }
 
+; SKIP:
+   { skip("HTML::Template is not installed", 1 )
+     unless eval
+             { require HTML::Template
+             } ;
 
-# Test 19: test use of TMPL_PATH without trailing slash
-{
-	my $t19_ta_obj = TestApp->new(TMPL_PATH=>'test/templates');
-	$t19_ta_obj->query(CGI->new({'test_rm' => 'tmpl_badparam_test'}));
-	my $t19_output = $t19_ta_obj->run();
-	if (($t19_output =~ /^Content\-Type\:\ text\/html/) && ($t19_output =~ /\-\-\-\-\>Hello\ World\:\ tmpl\_badparam\_test\<\-\-\-\-/)) {
-		print "ok 19\n";
-	} else {
-		print "not ok 19\n";
-	}
-}
 
+   # Test 19: test use of TMPL_PATH without trailing slash
+   {
+    my $t19_ta_obj = TestApp->new(TMPL_PATH=>'test/templates');
+    $t19_ta_obj->query(CGI->new({'test_rm' => 'tmpl_badparam_test'}));
+    my $t19_output = $t19_ta_obj->run();
+    ok (($t19_output =~ /^Content\-Type\:\ text\/html/) && ($t19_output =~ /\-\-\-\-\>Hello\ World\:\ tmpl\_badparam\_test\<\-\-\-\-/))
+   }
+
+   }
 
 # All done!

@@ -1,5 +1,5 @@
 package Bundle::CGI::Application::Magic;
-$VERSION = 1.0;
+$VERSION = 1.02;
 __END__
 
 =head1 NAME
@@ -28,7 +28,9 @@ Object::props           - used by Template::Magic::Zone
 
 Template::Magic         - the Template::Magic distribution
 
-CGI::Application::Plus   - used by CGI::Applicatio::Magic
+Data::FormValidator     - used by CGI::Application::CheckRM
+
+CGI::Application::Plus  - used by CGI::Applicatio::Magic
 
 =head1 DESCRIPTION
 

@@ -1,5 +1,5 @@
 package CGI::Application::CheckRM ;
-$VERSION = 1.01 ;
+$VERSION = 1.02 ;
 
 ; use strict
 ; use Carp
@@ -53,9 +53,9 @@ __END__
 
 CGI::Application::CheckRM - Checks run modes using Data::FormValidator
 
-=head1 VERSION 1.01
+=head1 VERSION 1.02
 
-Included in CGI-Application-Plus 1.01 distribution. The distribution includes:
+Included in CGI-Application-Plus 1.02 distribution. The distribution includes:
 
 =over
 

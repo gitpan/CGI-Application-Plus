@@ -10,7 +10,7 @@
 ; chdir './t'
 
 ; SKIP:
-   { skip("Template::Magic not installed", 6 )
+   { skip("Template::Magic is not installed: try 'install Bundle::CGI::Application::Magic'", 6 )
      unless eval
              { require Template::Magic
              }
