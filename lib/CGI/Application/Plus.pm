@@ -1,5 +1,5 @@
 package CGI::Application::Plus ;
-$VERSION = 1.13 ;
+$VERSION = 1.14 ;
 
 ; use strict
 ; use Carp
@@ -258,9 +258,13 @@ __END__
 
 CGI::Application::Plus - CGI::Application rewriting with several pluses
 
-=head1 VERSION 1.13
+=head1 VERSION 1.14
 
-Included in CGI-Application-Plus 1.13 distribution. The distribution includes:
+Included in CGI-Application-Plus 1.14 distribution.
+
+The latest versions changes are reported in the F<Changes> file in this distribution.
+
+The distribution includes:
 
 =over
 
@@ -327,11 +331,11 @@ In WebAppl.pm
 
 This module is a complete new and stand alone reimplementation of C<CGI::Application> module (i.e. B<it is not a subclass>). This means that it implements all the C<CGI::Application> methods on its own, and adds several new features to your C<CGI::Application> implementation, however maintaining intact the old ones (sort of backward compatibility just if you are about to switch from CGI::Application).
 
-In simple words: with C<CGI::Application::Plus> you have all the old C<CGI::Application> features plus some new ones (including memory efficiency), if some new feature is not useful to you, just use the old way that still works (see also L<"CGI::Application" compatibility">).
+In simple words: with C<CGI::Application::Plus> you have all the old C<CGI::Application> features plus some new ones (including memory efficiency), if any new feature is not useful to you, just use the old way that still works (see also L<"CGI::Application" compatibility">).
+
+B<IMPORTANT NOTE: The CGI-Application-Plus distribution will be maintained for backward compatibility, but has evolved in the more powerful, flexible and complete L<CGI::Builder|CGI::Builder> framework>. CGI::Builder includes all the features offered by CGI-Application-Plus, plus a lot more, included a cgiapp API compatible extension. You should take a look at that framework before to start to write a new CGI application.
 
 B<Note>: Since all the old features are excellently documented in L<CGI::Application>, right now this documentation focuses only on the new features that it implements exclusively. At the moment this documentation is not yet stand alone, so you should integrate both documentation and if you have no knowledge of C<CGI::Application> yet, be sure to understand that module before to switch to this one.
-
-B<IMPORTANT NOTE>: If you write any script that rely on this module, you better send me an e-mail so I will inform you in advance about eventual planned changes, new releases, and other relevant issues that could speed-up your work.
 
 =head2 Why yet another CGI::Application?
 
@@ -527,7 +531,7 @@ Used to get the current run mode. It's still working but deprecated use C<runmod
 
 Used to set the prerun mode. It's still working but deprecated use C<switch_to()> method instead.
 
-    $s->switch_to = 'myRunmode'
+    $s->switch_to('myRunmode')
 
 =item header_add ()
 
@@ -589,7 +593,7 @@ B<Note>: this method is internally called when C<$ENV{CGI_APP_RETURN_ONLY}> is s
 
 =head2 AUTOLOAD
 
-This method (not to be confused with the 'AUTOLOAD' run mode) implements an handy parameter accessor. You can store or retrieve a parameter as it where an object property:
+This method (not to be confused with the 'AUTOLOAD' run mode) implements an handy parameter accessor. You can store or retrieve a parameter as it was an object property:
 
     # instead of do this
     $s->param(myPar => 'some init value')

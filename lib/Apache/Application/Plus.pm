@@ -1,5 +1,5 @@
 package Apache::Application::Plus ;
-$VERSION = 1.13 ;
+$VERSION = 1.14 ;
 
 ; use strict
 ; use base 'CGI::Application::Plus'
@@ -58,9 +58,13 @@ __END__
 
 Apache::Application::Plus - Apache/mod_perl integration for CGI::Application::Plus
 
-=head1 VERSION 1.13
+=head1 VERSION 1.14
 
-Included in CGI-Application-Plus 1.13 distribution. The distribution includes:
+Included in CGI-Application-Plus 1.14 distribution.
+
+The latest versions changes are reported in the F<Changes> file in this distribution.
+
+The distribution includes:
 
 =over
 
@@ -262,9 +266,9 @@ This module adds just one method to the standard C<CGI::Application::Plus> metho
 
 =head2 new_object()
 
-This method initializes and returns the internal C<Apache::Application::Magic> object. You can override it if you know what you are doing, or you can simply ignore it ;-).
+This method initializes and returns the internal C<Apache::Application::Plus> object. You can override it if you know what you are doing, or you can simply ignore it ;-).
 
-B<Note>: This method is here just if you need to override the way the module generates the object. Think about this method as it were an included Instance Script that could cre the object by setting different properties and/or parameters. Anyway you have alternative methods to change the object properties, such as e.g. the setup() and cgiapp_init() methods.
+B<Note>: This method is here just if you need to override the way the module generates the object. Think about this method as it were an included Instance Script that could create the object by setting different properties and/or parameters. Anyway you have alternative methods to change the object properties, such as e.g. the setup() and cgiapp_init() methods.
 
 =head1 PROPERTY ACCESSORS
 

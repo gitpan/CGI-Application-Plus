@@ -1,5 +1,10 @@
 CGI-Application-Plus Latest Versions Changes
 
+version 1.14
+- Added note about the CGI Builder Framework
+- Fixed error in example for prerun_mode
+- Fixed error in passing dfv_default in CheckRM
+
 version 1.13
 - Changes in POD
 - Fixed outdated Bundle informations

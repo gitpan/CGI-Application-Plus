@@ -1,5 +1,5 @@
 package CGI::Application::CheckRM ;
-$VERSION = 1.13 ;
+$VERSION = 1.14 ;
 
 ; use strict
 ; use Carp
@@ -28,7 +28,7 @@ $VERSION = 1.13 ;
    ; $@ && croak qq(Error running profile method "$profile": $@)
    ; my $dfv = Data::FormValidator
                ->new( {}
-                    , $s->dfv_defaults
+                    , scalar $s->dfv_defaults
                     )
    ; my $r = $dfv->check( $s->query
                         , $profile
@@ -53,9 +53,13 @@ __END__
 
 CGI::Application::CheckRM - Checks run modes using Data::FormValidator
 
-=head1 VERSION 1.13
+=head1 VERSION 1.14
 
-Included in CGI-Application-Plus 1.13 distribution. The distribution includes:
+Included in CGI-Application-Plus 1.14 distribution.
+
+The latest versions changes are reported in the F<Changes> file in this distribution.
+
+The distribution includes:
 
 =over
 

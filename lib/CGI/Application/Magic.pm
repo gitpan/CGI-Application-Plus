@@ -1,5 +1,5 @@
 package CGI::Application::Magic ;
-$VERSION = 1.13 ;
+$VERSION = 1.14 ;
 
 ; use base 'CGI::Application::Plus'
 ; use strict
@@ -74,6 +74,7 @@ $VERSION = 1.13 ;
                              , defined $err  ? $err   : ()
                              ]
                )
+
    }
    
 ; sub lookup_CODE     # value handler
@@ -100,9 +101,13 @@ __END__
 
 CGI::Application::Magic - Template based framework for CGI applications
 
-=head1 VERSION 1.13
+=head1 VERSION 1.14
 
-Included in CGI-Application-Plus 1.13 distribution. The distribution includes:
+Included in CGI-Application-Plus 1.14 distribution.
+
+The latest versions changes are reported in the F<Changes> file in this distribution.
+
+The distribution includes:
 
 =over
 

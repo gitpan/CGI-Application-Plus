@@ -1,5 +1,5 @@
 package CGI::Application::Plus::Util ;
-$VERSION = 1.02 ;
+$VERSION = 1.14 ;
 
 ; use strict
 

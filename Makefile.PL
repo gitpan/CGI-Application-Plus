@@ -1,7 +1,7 @@
 ; use ExtUtils::MakeMaker
 
 ; my $dist = 'CGI::Application::Plus'
-; my $vers = '1.13'
+; my $vers = '1.14'
 
 ; WriteMakefile
    ( NAME           => $dist
@@ -14,6 +14,7 @@
    , PREREQ_PM      => { 'Class::constr'     => '1.6'
                        , 'Class::props'      => '1.6'
                        , 'Object::props'     => '1.6'
+                       , 'Object::groups'    => '1.6'
                        }
    )
 
