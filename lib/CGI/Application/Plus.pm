@@ -1,5 +1,5 @@
 package CGI::Application::Plus ;
-$VERSION = 1.1 ;
+$VERSION = 1.11 ;
 
 ; use strict
 ; use Carp
@@ -15,15 +15,12 @@ $VERSION = 1.1 ;
 ######### GROUPS ############
 
 ; use Object::groups
-      ( { name       => [ qw | param
-                               header_props
-                             |
-                        ]
+      ( { name       => [ qw | param header_props | ]
         , no_strict  => 1
         }
       , { name       => 'run_modes'
         , no_strict  => 1
-        , pre_process => sub
+        , pre_process=> sub
                          { if ( ref $_[1] eq 'ARRAY' )
                             { $_[1] = { map { $_=>$_ } @{$_[1]} }
                             }
@@ -125,7 +122,7 @@ $VERSION = 1.1 ;
 
 
 ; sub run
-   {  my ($s, $RM) = @_
+   { my ($s, $RM) = @_
    ; $s->__STEP = 1
    ; unless ( defined $RM && length $RM )        # no RM from script
       { $RM = ref $s->mode_param eq 'CODE'
@@ -250,7 +247,7 @@ $VERSION = 1.1 ;
  
 ; sub PRINT
    { my $s = shift
-   ; ${$$s[0]} .= join $,||'', map{$_||''} @_
+   ; ${$$s[0]} .= join $,||'', map{defined $_? $_ : ''} @_
    }
    
 ; 1
@@ -261,9 +258,9 @@ __END__
 
 CGI::Application::Plus - CGI::Application rewriting with several pluses
 
-=head1 VERSION 1.1
+=head1 VERSION 1.11
 
-Included in CGI-Application-Plus 1.1 distribution. The distribution includes:
+Included in CGI-Application-Plus 1.11 distribution. The distribution includes:
 
 =over
 
@@ -328,13 +325,15 @@ In WebAppl.pm
 
 =head1 DESCRIPTION
 
-This module is a complete new stand alone reimplementation of C<CGI::Application> module (i.e. it is not a subclass). It adds several new features to your C<CGI::Application> implementation, maintaining intact the old ones, so if some new feature is not useful to you, just use the old way that still works.
+This module is a complete new and stand alone reimplementation of C<CGI::Application> module (i.e. B<it is not a subclass>). This means that it implements all the C<CGI::Application> methods on its own, and adds several new features to your C<CGI::Application> implementation, however maintaining intact the old ones.
 
 In simple words: with C<CGI::Application::Plus> you have all the old C<CGI::Application> features PLUS several new ones (including memory efficiency), if you stick on the old module you will have just a part of it.
 
+If some new feature is not useful to you, just use the old way that still works (see also L<"CGI::Application" compatibility">).
+
 B<Note>: Since all the old features are excellently documented in L<CGI::Application>, right now this documentation focuses only on the new features that it implements exclusively. At the moment this documentation is not yet stand alone, so you should integrate both documentation and if you have no knowledge of C<CGI::Application> yet, be sure to understand that module before to switch to this one.
 
-B<IMPORTANT NOTE>: If you write any script that rely on this module, you better send me an e-mail so I will inform you in advance about eventual planned changes, new releases, and other relevant issues that could speed-up your work. (see also L<"CONTRIBUTION">)
+B<IMPORTANT NOTE>: If you write any script that rely on this module, you better send me an e-mail so I will inform you in advance about eventual planned changes, new releases, and other relevant issues that could speed-up your work.
 
 =head2 Why yet another CGI::Application?
 
@@ -344,7 +343,7 @@ B<Note>: If you are thinking that this module is like reinventing the wheel... w
 
 =head2 mod_perl
 
-C<CGI::Application::Plus> is fully mod_perl 1 and 2 compatible (i.e. you can use it under both CGI and mod_perl). Anyway, if your application runs under mod_perl, you should consider to integrates it with Apache by using the L<Apache::Application::Plus|Apache::Application::Plus> module.
+C<CGI::Application::Plus> is fully mod_perl 1 and 2 compatible (i.e. you can use it under both CGI and mod_perl). Anyway, if your application runs under mod_perl, you should consider to integrate it with Apache by using the L<Apache::Application::Plus|Apache::Application::Plus> module.
 
 =head1 Exclusive Features and Improvements
 
@@ -434,7 +433,7 @@ All the internal data have an accessor that you can override to have it changed 
 
 =item * Efficiency
 
-Under normal environment this module should load a little faster and use less memory than C<CGI::Application> thanks to the far shorter code and the use of OOTools pragmas, that implements efficient closure accessors at compile time. (see L<Object::props>, L<Object::groups>, L<Class::constr>).
+Under normal environment this module should load a little faster and use less memory than C<CGI::Application> thanks to the far shorter code and the use of OOTools pragmas, that implement efficient closure accessors at compile time. (see L<Object::props>, L<Object::groups>, L<Class::constr>).
 
 =item * Super Classes
 
@@ -442,7 +441,7 @@ If you write a super class and need some more properties for your class, you can
 
 =head1 CGI::Application compatibility
 
-An old C<CGI::Application> implementation should run unchanged under C<CGI::Application::Plus> as well, taking the advantages of all the pluses of this module (this module pass all the test of CGI::Application 3.1, but if you found some incompatibilities, please tell me, and I will fix it).
+An old C<CGI::Application> implementation should run unchanged under C<CGI::Application::Plus> as well, taking the advantages of all the pluses of this module (this module pass all the tests of CGI::Application 3.1, but if you found some incompatibilities, please tell me, and I will fix it).
 
 B<Note>: The compatibility could be compromised if your application used some dirty hack that bypass accessors (i.e. some statements that interacts with the internal hash structure of the C<CGI::Application> class, something like C<< $self->{__PARAMS} >>, because C<CGI::Application::Plus> implements a more consistent but different internal structure).
 
@@ -486,7 +485,7 @@ More than a difference this is a new possible situation that this method should 
       if (ref $ref eq 'CODE')
       {
         $s->start_capture() ;
-        $ref->($s) ;               # executes $ref CoDE (print)
+        $ref->($s) ;               # executes $ref CODE (print)
         $$ref = $s->stop_capture ; # now $ref is the ref to the content
       }
       # do something with $ref as usual
@@ -784,9 +783,7 @@ Make this documentation stand alone
 
 =head1 SUPPORT and FEEDBACK
 
-I would like to have just a line of feedback from everybody who tries or actually uses this module. PLEASE, write me any comment, suggestion or request. ;-)
-
-More information at http://perl.4pro.net/?CGI::Application::Plus.
+If you need support or if you want just to send me some feedback or request, please use this link: http://perl.4pro.net/?CGI::Application::Plus.
 
 =head1 AUTHOR and COPYRIGHT
 
@@ -796,8 +793,4 @@ All Rights Reserved. This module is free software. It may be used, redistributed
 
 =head1 CREDITS
 
-Thanks to anyone that contributes to the creation of the C<CGI::Application> metaphor: the merit of that great idea still belong to them.
-
-=head1 CONTRIBUTION
-
-I always answer to each and all the message i receive from users, but I have almost no time to find, install and organize a mailing list software that could improve a lot the support to people that use my modules. Besides I have too little time to write more detailed documentation, more examples and tests. Your contribution would be precious, so if you can and want to help, just contact me. Thank you in advance.
+Even if C<CGI::Application::Plus> has been independently developed, special thanks go to anyone that contributes to the creation of the C<CGI::Application> module. The merit of that great idea still belong to them.

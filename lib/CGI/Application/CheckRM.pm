@@ -1,5 +1,5 @@
 package CGI::Application::CheckRM ;
-$VERSION = 1.02 ;
+$VERSION = 1.11 ;
 
 ; use strict
 ; use Carp
@@ -53,9 +53,9 @@ __END__
 
 CGI::Application::CheckRM - Checks run modes using Data::FormValidator
 
-=head1 VERSION 1.02
+=head1 VERSION 1.11
 
-Included in CGI-Application-Plus 1.02 distribution. The distribution includes:
+Included in CGI-Application-Plus 1.11 distribution. The distribution includes:
 
 =over
 
@@ -262,16 +262,10 @@ This property allows you to access the C<Data::FormValidator::Results> object se
 
 =head1 SUPPORT and FEEDBACK
 
-I would like to have just a line of feedback from everybody who tries or actually uses this module. PLEASE, write me any comment, suggestion or request. ;-)
-
-More information at http://perl.4pro.net/?CGI::Application::CheckRM.
+If you need support or if you want just to send me some feedback or request, please use this link: http://perl.4pro.net/?CGI::Application::CheckRM.
 
 =head1 AUTHOR and COPYRIGHT
 
-© 2004 by Domizio Demichelis <dd@4pro.net>.
+© 2004 by Domizio Demichelis.
 
 All Rights Reserved. This module is free software. It may be used, redistributed and/or modified under the same terms as perl itself.
-
-=head1 CONTRIBUTION
-
-I always answer to each and all the message i receive from users, but I have almost no time to find, install and organize a mailing list software that could improve a lot the support to people that use my modules. Besides I have too little time to write more detailed documentation, more examples and tests. Your contribution would be precious, so if you can and want to help, just contact me. Thank you in advance.

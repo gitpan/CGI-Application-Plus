@@ -1,5 +1,5 @@
 package CGI::Application::Magic ;
-$VERSION = 1.1 ;
+$VERSION = 1.11 ;
 
 ; use base 'CGI::Application::Plus'
 ; use strict
@@ -16,7 +16,7 @@ $VERSION = 1.1 ;
         }
       )
 
-; *tm_path = sub{shift()->tmpl_path(@_)}
+; *tm_path = sub : lvalue { shift()->tmpl_path(@_) }
 
 ; use Object::props
       ( { name       => 'tm_lookups'
@@ -100,9 +100,9 @@ __END__
 
 CGI::Application::Magic - Template based framework for CGI applications
 
-=head1 VERSION 1.1
+=head1 VERSION 1.11
 
-Included in CGI-Application-Plus 1.1 distribution. The distribution includes:
+Included in CGI-Application-Plus 1.11 distribution. The distribution includes:
 
 =over
 
@@ -229,7 +229,7 @@ This module transparently integrates C<CGI::Application::Plus> and C<Template::M
 
 B<Note>: Knowing L<CGI::Application::Plus> and L<Template::Magic> could help to better understand this documentation ;-).
 
-B<IMPORTANT NOTE>: If you write any script that rely on this module, you better send me an e-mail so I will inform you in advance about eventual planned changes, new releases, and other relevant issues that could speed-up your work. (see also L<"CONTRIBUTION">)
+B<IMPORTANT NOTE>: If you write any script that rely on this module, you better send me an e-mail so I will inform you in advance about eventual planned changes, new releases, and other relevant issues that could speed-up your work. 
 
 =head2 Why CGI::Application::Plus and Template::Magic?
 
@@ -295,7 +295,7 @@ This concept allows you to create and use just the runmethos that need to do som
 
 =head2 How it works
 
-This module is a sub class of C<CGI::Application::Plus> and implements a default value for the C<page> cgiapp property: a CODE reference that produces and print the page content by using an internal C<Template::Magic> object.
+This module is a sub class of C<CGI::Application::Plus> and implements a default value for the C<page> cgiapp property: a CODE reference that produces and print the page content by using an internal C<Template::Magic> object with HTML syntax.
 
 Since the C<page> property is set to its own default value even before the runmethod is called, the runmethod can completely (and usually should) avoid to produce any output.
 
@@ -368,6 +368,15 @@ If you want the C<Template::Magic> object to look up in some more locaion, e.g. 
       ( lookups => [ $self->tm_lookups_package, # remember the *::Lookups pkg
                      scalar $self->param        # param hash ref
                      \%ENV  ]);                 # %ENV ref
+
+
+=head2 The template syntax
+
+This module implements a C<Template::Magic::HTML> object, so the used C<markers> are the default HTML markers e.g.:
+
+    <!--{a_block_label}--> content <!--{/a_block_label}-->
+
+and the I<value handlers> are the default HTML handler, so including C<TableTiler> and C<FillInForm> handlers by default. Please, read L<Template::Magic> and L<Template::Magic::HTML>. 
 
 =head2 How to organize the application module
 
@@ -447,16 +456,10 @@ B<Note>: You can completely override the creation of the internal object by over
 
 =head1 SUPPORT and FEEDBACK
 
-I would like to have just a line of feedback from everybody who tries or actually uses this module. PLEASE, write me any comment, suggestion or request. ;-)
-
-More information at http://perl.4pro.net/?CGI::Application::Magic.
+If you need support or if you want just to send me some feedback or request, please use this link: http://perl.4pro.net/?CGI::Application::Magic.
 
 =head1 AUTHOR and COPYRIGHT
 
 © 2004 by Domizio Demichelis.
 
 All Rights Reserved. This module is free software. It may be used, redistributed and/or modified under the same terms as perl itself.
-
-=head1 CONTRIBUTION
-
-I always answer to each and all the message i receive from users, but I have almost no time to find, install and organize a mailing list software that could improve a lot the support to people that use my modules. Besides I have too little time to write more detailed documentation, more examples and tests. Your contribution would be precious, so if you can and want to help, just contact me. Thank you in advance.

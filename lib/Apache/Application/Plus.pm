@@ -1,14 +1,14 @@
 package Apache::Application::Plus ;
-$VERSION = 1.1 ;
+$VERSION = 1.11 ;
 
 ; use strict
 ; use base 'CGI::Application::Plus'
-; require File::Basename
 ; use mod_perl
 ; use constant MP2 => $mod_perl::VERSION >= 1.99
 
 ; BEGIN
-   { if ( MP2 )
+   { require File::Basename
+   ; if ( MP2 )
       { require Apache::RequestRec
       ; require Apache::Response
       ; require Apache::Const
@@ -51,15 +51,16 @@ $VERSION = 1.1 ;
 
 ; 1
 
+
 __END__
 
 =head1 NAME
 
 Apache::Application::Plus - Apache/mod_perl integration for CGI::Application::Plus
 
-=head1 VERSION 1.1
+=head1 VERSION 1.11
 
-Included in CGI-Application-Plus 1.1 distribution. The distribution includes:
+Included in CGI-Application-Plus 1.11 distribution. The distribution includes:
 
 =over
 
@@ -228,8 +229,6 @@ For mod_perl 2:
 
 B<Note>: In order to use this module, the only difference between mod_perl 1 and 2 configuration, is the mod_perl handler name C<'PerlHandler'> that becomes C<'PerlResponseHandler'> for the version 2.
 
-B<WARNING>: You could put these lines in F<httpd.conf> too, but (depending by your configuration) in this case the DirectoryIndex lookup may be ignored (i.e. in this case you should use ALWAYS URL pointing to a file: don't use http://domain.com/ but use http://domain.com/index.html).
-
 =item 3 restrict its use to fit your needs
 
 Use the Apache configuration sections C<Location>, C<Directory>, C<DirectoryMatch>, C<Files>, C<FilesMatch> etc. to restrict the use of the handler (see also the Apache Directive documentation)
@@ -277,16 +276,10 @@ This property allows you to access the request Apache object.
 
 =head1 SUPPORT and FEEDBACK
 
-I would like to have just a line of feedback from everybody who tries or actually uses this module. PLEASE, write me any comment, suggestion or request. ;-)
-
-More information at http://perl.4pro.net/?Apache::Application::Plus.
+If you need support or if you want just to send me some feedback or request, please use this link: http://perl.4pro.net/?Apache::Application::Plus.
 
 =head1 AUTHOR and COPYRIGHT
 
 © 2004 by Domizio Demichelis.
 
 All Rights Reserved. This module is free software. It may be used, redistributed and/or modified under the same terms as perl itself.
-
-=head1 CONTRIBUTION
-
-I always answer to each and all the message i receive from users, but I have almost no time to find, install and organize a mailing list software that could improve a lot the support to people that use my modules. Besides I have too little time to write more detailed documentation, more examples and tests. Your contribution would be precious, so if you can and want to help, just contact me. Thank you in advance.

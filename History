@@ -1,0 +1,27 @@
+CGI-Application-Plus Latest Versions Changes
+
+
+Version 1.11
+- Fixed Apache::Application::Magic::tm_template() unintended redundancy:
+  (now the tm_template property maintains its default)
+- Fixed a '0' string bug that was affecting the test mode
+  (only when $ENV{CGI_APP_OUTPUT_ONLY}==1)
+- Fixed tm_path alias, now it's lvalue too
+
+Version 1.1
+- Added new CGI::Application::Magic::qparam() property group accessor
+- Added new CGI::Application::Magic::tm_object property accessor
+- Added new CGI::Application::Magic::tm_new_object() method
+- Added Apache::Application::Plus module
+- Added Apache::Application::Magic module
+- POD fixes and updates
+
+Version 1.02
+- Makefile changes
+- POD fixes and updates
+
+Version 1.01
+- Makefile changes
+
+Version 1.0
+- First public release
