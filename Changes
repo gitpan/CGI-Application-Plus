@@ -1,5 +1,8 @@
 CGI-Application-Plus Latest Versions Changes
 
+Version 1.15
+- Changed Makefile.PL version check
+
 version 1.14
 - Added note about the CGI Builder Framework
 - Fixed error in example for prerun_mode

@@ -1,5 +1,5 @@
 package Bundle::Application::Magic;
-$VERSION = 1.14;
+$VERSION = 1.15;
 __END__
 
 =head1 NAME
