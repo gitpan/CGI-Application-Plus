@@ -1,5 +1,5 @@
 package CGI::Application::Plus ;
-$VERSION = 1.11 ;
+$VERSION = 1.12 ;
 
 ; use strict
 ; use Carp
@@ -258,9 +258,9 @@ __END__
 
 CGI::Application::Plus - CGI::Application rewriting with several pluses
 
-=head1 VERSION 1.11
+=head1 VERSION 1.12
 
-Included in CGI-Application-Plus 1.11 distribution. The distribution includes:
+Included in CGI-Application-Plus 1.12 distribution. The distribution includes:
 
 =over
 
@@ -337,7 +337,7 @@ B<IMPORTANT NOTE>: If you write any script that rely on this module, you better 
 
 =head2 Why yet another CGI::Application?
 
-I greatly apreciate the general philosophy of the cgiapp system but I wasn't satisfied with several aspects of its implementation, so I started to write a sub class. Very soon I realized that I would had to override at least the C<new()>, C<run()> and C<param()> methods. Then, after overriding all that, it would have been stupid to have to depend and to be limited by another module just for the few subs that remain original, so... I wrote this module with a completely new and different approach to the same general metaphor. Just look at the source to see what I mean.
+I greatly apreciate the general philosophy of the cgiapp system but I wasn't satisfied with several aspects of its implementation, so I started to write a sub class. Very soon I realized that I would had to override at least the C<new()>, C<run()> and C<param()> methods. Then, after overriding all that, it would have been stupid to have to depend and to be limited by another module just for the few subs that remain original, so... I wrote this module with a completely new and different approach to the same general metaphor. Just look at the source to see what I mean, or read L<"APPENDIX">.
 
 B<Note>: If you are thinking that this module is like reinventing the wheel... well... just think about how slow, unsure and unconfortable would be your car if it would use the first original hand-made-wooden wheels of several centuries ago :-).
 
@@ -433,11 +433,11 @@ All the internal data have an accessor that you can override to have it changed 
 
 =item * Efficiency
 
-Under normal environment this module should load a little faster and use less memory than C<CGI::Application> thanks to the far shorter code and the use of OOTools pragmas, that implement efficient closure accessors at compile time. (see L<Object::props>, L<Object::groups>, L<Class::constr>).
+Under normal environment this module should load faster and use less memory than C<CGI::Application> thanks to the far shorter code and the use of OOTools pragmas, that implement efficient closure accessors at compile time. (see L<Object::props>, L<Object::groups>, L<Class::constr>). "This technique saves on both compile time and memory use, and is less error-prone as well, since syntax checks happen at compile time." (quoted from "Function Templates" in the F<perlref> manpage).
 
 =item * Super Classes
 
-If you write a super class and need some more properties for your class, you can use the OOTools pragmas for free (memory). They are already loaded by this module and allows you to give a more consistent interface to your users, creating very efficient accessors at compile time with just a couple of lines. Take a look at the source of the modules in this distribution to understand what I mean.
+If you write a super class and need some more properties for your class, you can use the OOTools pragmas for free (memory). They are already loaded by this module and allows you to give a more consistent interface to your users, creating very efficient accessors at compile time with just a couple of lines. Take a look at the source of the modules in this distribution to understand what I mean. (see also L<"APPENDIX">)
 
 =head1 CGI::Application compatibility
 
@@ -794,3 +794,192 @@ All Rights Reserved. This module is free software. It may be used, redistributed
 =head1 CREDITS
 
 Even if C<CGI::Application::Plus> has been independently developed, special thanks go to anyone that contributes to the creation of the C<CGI::Application> module. The merit of that great idea still belong to them.
+
+=head1 APPENDIX
+
+To answer to the question about why I did not subclass the C<CGI::Application> module and I wrote a new reimplementation from the ground up, I give you a simple but very meaningful example.
+
+Just take a look at the different code implementation of the C<param()>,
+C<header_props()>, C<header_add()> and C<runmodes()> methods in these two snippets that offers exactly the same features and pass the same tests (well, actually the first implementation offers some more features ;-):
+
+
+    # CGI::Application::Plus v 1.02
+    
+    use Object::groups
+        ( { name       => [ qw | param header_props | ]
+          , no_strict  => 1
+          }
+        , { name       => 'run_modes'
+          , pre_process => sub
+                           { if ( ref $_[1] eq 'ARRAY' )
+                              { $_[1] = { map { $_=>$_ } @{$_[1]} }
+                              }
+                           }
+          , no_strict  => 1
+          }
+        ) ;
+
+
+B<Note>: header_add() is useless since the header_props() can add and delete headers too. Anyway if you want it you can use the alias provided.
+
+Now let's see the CGI::Application implementation of the same methods:
+
+    # CGI::Application v. 3.2_mls5
+    
+    sub header_add {
+        my $self = shift;
+        return $self->_header_props_update(\@_,add=>1);
+    }
+    
+    sub header_props {
+        my $self = shift;
+        return $self->_header_props_update(\@_,add=>0);
+    }
+    
+    # used by header_props and header_add to update the headers
+    sub _header_props_update {
+        my $self     = shift;
+        my $data_ref = shift;
+        my %in       = @_;
+    
+        my @data = @$data_ref;
+    
+        # First use?  Create new __HEADER_PROPS!
+        $self->{__HEADER_PROPS} = {} unless (exists($self->{__HEADER_PROPS}));
+    
+        my $props;
+    
+        # If data is provided, set it!
+        if (scalar(@data)) {
+            warn("header_props called while header_type set to 'none', headers will
+    NOT be sent!") if $self->header_type eq 'none';
+            # Is it a hash, or hash-ref?
+            if (ref($data[0]) eq 'HASH') {
+                # Make a copy
+                %$props = %{$data[0]};
+            } elsif ((scalar(@data) % 2) == 0) {
+                # It appears to be a possible hash (even # of elements)
+                %$props = @data;
+            } else {
+                my $meth = $in{add} ? 'add' : 'props';
+                croak("Odd number of elements passed to header_$meth().  Not a valid
+    hash")
+            }
+    
+            # merge in new headers, appending new values passed as array refs
+            if ($in{add}) {
+                for my $key_set_to_aref (grep { ref $props->{$_} eq 'ARRAY'} keys
+    %$props) {
+                    my $existing_val = $self->{__HEADER_PROPS}->{$key_set_to_aref};
+                    next unless defined $existing_val;
+                    my @existing_val_array = (ref $existing_val eq 'ARRAY') ?
+    @$existing_val : ($existing_val);
+                    $props->{$key_set_to_aref}  = [ @existing_val_array, @{
+    $props->{$key_set_to_aref} } ];
+                }
+                $self->{__HEADER_PROPS} = { %{ $self->{__HEADER_PROPS} }, %$props };
+            }
+            # Set new headers, clobbering existing values
+            else {
+                $self->{__HEADER_PROPS} = $props;
+            }
+    
+        }
+    
+        # If we've gotten this far, return the value!
+        return (%{ $self->{__HEADER_PROPS}});
+    }
+    
+    sub param {
+        my $self = shift;
+        my (@data) = (@_);
+    
+        # First use?  Create new __PARAMS!
+        $self->{__PARAMS} = {} unless (exists($self->{__PARAMS}));
+    
+        my $rp = $self->{__PARAMS};
+    
+        # If data is provided, set it!
+        if (scalar(@data)) {
+            # Is it a hash, or hash-ref?
+            if (ref($data[0]) eq 'HASH') {
+                # Make a copy, which augments the existing contents (if any)
+                %$rp = (%$rp, %{$data[0]});
+            } elsif ((scalar(@data) % 2) == 0) {
+                # It appears to be a possible hash (even # of elements)
+                %$rp = (%$rp, @data);
+            } elsif (scalar(@data) > 1) {
+                croak("Odd number of elements passed to param().  Not a valid
+    hash");
+            }
+        } else {
+            # Return the list of param keys if no param is specified.
+            return (keys(%$rp));
+        }
+    
+        # If exactly one parameter was sent to param(), return the value
+        if (scalar(@data) <= 2) {
+            my $param = $data[0];
+            return $rp->{$param};
+        }
+        return;  # Otherwise, return undef
+    }
+    
+    sub run_modes {
+        my $self = shift;
+        my (@data) = (@_);
+    
+        # First use?  Create new __RUN_MODES!
+        $self->{__RUN_MODES} = {} unless (exists($self->{__RUN_MODES}));
+    
+        my $rr_m = $self->{__RUN_MODES};
+    
+        # If data is provided, set it!
+        if (scalar(@data)) {
+            # Is it a hash, hash-ref, or array-ref?
+            if (ref($data[0]) eq 'HASH') {
+                # Make a copy, which augments the existing contents (if any)
+                %$rr_m = (%$rr_m, %{$data[0]});
+            } elsif (ref($data[0]) eq 'ARRAY') {
+                # Convert array-ref into hash table
+                foreach my $rm (@{$data[0]}) {
+                    $rr_m->{$rm} = $rm;
+                }
+            } elsif ((scalar(@data) % 2) == 0) {
+                # It appears to be a possible hash (even # of elements)
+                %$rr_m = (%$rr_m, @data);
+            } else {
+                croak("Odd number of elements passed to run_modes().  Not a valid
+    hash");
+            }
+        }
+    
+        # If we've gotten this far, return the value!
+        return (%$rr_m);
+    }
+
+The first is not only far more concise and so, far more simple to maintain, but is more memory efficient because it uses the same (closure) code of a few lines, to implements all the methods at compile time. It's similar to load just 1 method instead of 4. "This technique saves on both compile time and memory use, and is less error-prone as well, since syntax checks happen at compile time." (quoted from "Function templates" in the F<perlref> manpage).
+
+If the programmer needs to add some more accessor methods of this type (groups) to his subclass (e.g as the qparam() method that access the query parameter, or the tm_defaults() of C<CGI::Application::Magic>), he can do it for free (the C<Object::groups> closure is already loaded) and in just the lines of code in this example:
+
+   use Object::groups
+       ( { name       => 'tm_defaults'
+         , no_strict  => 1
+         }
+       ) ;
+
+Now, the tm_default() can do with the Template::Magic defaults hash, what param() does with the parameters hash, (the qparam() can do the same with the query parameters hash), so now you have 6 accessors methods available at the price of 1. ;-)
+
+More bargains for the other properties accessor methods! With just another closure (just 1 more) C<CGI::Application::Plus> implements:
+
+    mode_param
+    query
+    runmode (start_mode, prerun_mode)
+    tmpl_path
+    header_type
+
+and all the other properties you need, with a the "syntactic sugar" that allows your properties to be lvalue, (so you can create a reference to them, assign to them and apply a regex to them). Not to mention that they can have defaults, validation rules, and some other options that you don't need to write each time in a new method (see C<OOTools>  pragmas documentation). They have also another plus: you can initialize each property by passing it as argument to the new() method.
+
+And since C<CGI::Application::Plus> passes the same tests of C<CGI::Application>, if you use it as your base class, you will have all that for free.
+
+I think this is a Really Good Reason to rewrite the C<CGI::Application> module from the ground up.

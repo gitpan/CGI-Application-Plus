@@ -1,5 +1,5 @@
 package Apache::Application::Plus ;
-$VERSION = 1.11 ;
+$VERSION = 1.12 ;
 
 ; use strict
 ; use base 'CGI::Application::Plus'
@@ -58,9 +58,9 @@ __END__
 
 Apache::Application::Plus - Apache/mod_perl integration for CGI::Application::Plus
 
-=head1 VERSION 1.11
+=head1 VERSION 1.12
 
-Included in CGI-Application-Plus 1.11 distribution. The distribution includes:
+Included in CGI-Application-Plus 1.12 distribution. The distribution includes:
 
 =over
 

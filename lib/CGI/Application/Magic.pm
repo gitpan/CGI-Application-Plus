@@ -1,5 +1,5 @@
 package CGI::Application::Magic ;
-$VERSION = 1.11 ;
+$VERSION = 1.12 ;
 
 ; use base 'CGI::Application::Plus'
 ; use strict
@@ -100,9 +100,9 @@ __END__
 
 CGI::Application::Magic - Template based framework for CGI applications
 
-=head1 VERSION 1.11
+=head1 VERSION 1.12
 
-Included in CGI-Application-Plus 1.11 distribution. The distribution includes:
+Included in CGI-Application-Plus 1.12 distribution. The distribution includes:
 
 =over
 

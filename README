@@ -5,7 +5,7 @@ CGI-Application-Plus README File
 Description
 -----------
 
-This module is a complete new stand alone reimplementation of C<CGI::Application> module (i.e. it is not a subclass). It adds several new features to your CGI::Application implementation, maintaining intact the old ones, so if some new feature is not useful to you, just use the old way that still works.
+This distribution is a complete new and stand alone reimplementation of CGI::Application module (i.e. B<it is not a subclass>). This means that it implements all the CGI::Application methods on its own, and adds several new features to your CGI::Application implementation, however maintaining intact the old ones.
 
     
 Installation
@@ -35,4 +35,4 @@ CGI::Application::Magic, all in one easy step:
 
 --
 Domizio Demichelis perl.4pro.net
-2004-21-01
+2004-26-01
