@@ -1,5 +1,5 @@
 package CGI::Application::Magic ;
-$VERSION = 1.18 ;
+$VERSION = 1.19 ;
 
 # This file uses the "Perlish" coding style
 # please read http://perl.4pro.net/perlish_coding_style.html
@@ -104,9 +104,9 @@ __END__
 
 CGI::Application::Magic - Template based framework for CGI applications
 
-=head1 VERSION 1.18
+=head1 VERSION 1.19
 
-Included in CGI-Application-Plus 1.18 distribution.
+Included in CGI-Application-Plus 1.19 distribution.
 
 The latest versions changes are reported in the F<Changes> file in this distribution.
 
