@@ -1,5 +1,5 @@
 package CGI::Application::Magic ;
-$VERSION = 1.02 ;
+$VERSION = 1.1 ;
 
 ; use base 'CGI::Application::Plus'
 ; use strict
@@ -40,32 +40,40 @@ $VERSION = 1.02 ;
                             }
                          }
         }
+      , { name       => 'tm_object'
+        , default    => sub{ shift()->tm_new_object(@_) }
+        }
       )
-        
+      
+; sub tm_new_object
+   { my ($s) = @_
+   ; Template::Magic
+     ->new( lookups        => [ $s->tm_lookups_package ]
+          , value_handlers => [ $s->lookup_CODE()
+                              , 'HTML'
+                              ]
+          , markers        => 'HTML'
+          , defined $s->tm_defaults ? %{$s->tm_defaults} : ()
+          )
+   }
+             
 ; sub _tm_print
    { my ($s) = @_
    ; my $t = $s->tm_template
    ; my $lkps = $s->tm_lookups
    ; $lkps &&= [ $lkps ] unless ref $lkps eq 'ARRAY'
    ; my $err = eval{$s->dfv_results->msgs}
-   ; Template::Magic
-     ->new   ( lookups        => [ $s->tm_lookups_package ]
-             , value_handlers => [ $s->lookup_CODE()
-                                 , 'HTML'
-                                 ]
-             , markers        => 'HTML'
-             , defined $s->tm_defaults ? %{$s->tm_defaults} : ()
-             )
-     ->nprint( template => File::Spec
-                           ->file_name_is_absolute( $t )
-                           ? $t
-                           : File::Spec->catfile( $s->tm_path
-                                                , $t
-                                                )
-             , lookups  => [ defined $lkps ? @$lkps : ()
-                           , defined $err  ? $err   : ()
-                           ]
-             )
+   ; $s->tm_object
+       ->nprint( template => File::Spec
+                             ->file_name_is_absolute( $t )
+                             ? $t
+                             : File::Spec->catfile( $s->tm_path
+                                                  , $t
+                                                  )
+               , lookups  => [ defined $lkps ? @$lkps : ()
+                             , defined $err  ? $err   : ()
+                             ]
+               )
    }
    
 ; sub lookup_CODE     # value handler
@@ -83,7 +91,7 @@ $VERSION = 1.02 ;
    }
    
 ; sub setup {}
-   
+
 ; 1
 
 __END__
@@ -92,9 +100,9 @@ __END__
 
 CGI::Application::Magic - Template based framework for CGI applications
 
-=head1 VERSION 1.02
+=head1 VERSION 1.1
 
-Included in CGI-Application-Plus 1.02 distribution. The distribution includes:
+Included in CGI-Application-Plus 1.1 distribution. The distribution includes:
 
 =over
 
@@ -102,9 +110,17 @@ Included in CGI-Application-Plus 1.02 distribution. The distribution includes:
 
 CGI::Application rewriting with several pluses
 
+=item * Apache::Application::Plus
+
+Apache/mod_perl integration for CGI::Application::Plus
+
 =item * CGI::Application::Magic
 
 Template based framework for CGI applications
+
+=item * Apache::Application::Magic
+
+Apache/mod_perl integration for CGI::Application::Magic
 
 =item * CGI::Application::CheckRM
 
@@ -119,7 +135,7 @@ Checks run modes using Data::FormValidator
 =item Prerequisites
 
     Perl version    >= 5.6.1
-    OOTools         >= 1.52
+    OOTools         >= 1.6
     Template::Magic >= 1.0
 
 =item CPAN
@@ -128,7 +144,7 @@ Checks run modes using Data::FormValidator
 
 If you want to install also all the prerequisites to use C<CGI::Application::Magic>), all in one easy step:
 
-    perl -MCPAN -e 'install Bundle::CGI::Application::Magic'
+    perl -MCPAN -e 'install Bundle::Application::Magic'
 
 =item Standard installation
 
@@ -353,9 +369,7 @@ If you want the C<Template::Magic> object to look up in some more locaion, e.g. 
                      scalar $self->param        # param hash ref
                      \%ENV  ]);                 # %ENV ref
 
-=head2 How to organize the application
-
-=head3 Classical configuration
+=head2 How to organize the application module
 
 =over
 
@@ -375,11 +389,21 @@ Set the variables or the subs in the C<*::Lookups> package that the internal C<T
 
 Define just the runmethods that needs to do something special
 
+=item 5
+
+Use the properties defaults value, that can save you a lot of time ;-)
+
 =back
 
-=head3 Script parsed directory
+=head2 mod_perl
 
-See the F<'script_parsed_dir'> example in this distribution to see a more exotic configuration that allows you a total template driven configuration.
+C<CGI::Application::Magic> is fully mod_perl 1 and 2 compatible (i.e. you can use it under both CGI and mod_perl). Anyway, if your application runs under mod_perl, you should consider to integrates it with Apache by using the L<Apache::Application::Magic|Apache::Application::Magic> module, that can easily implement a sort of "Perl Side Include" (sort of easier, more powerful and flexible "Server Side Include").                             .
+
+=head1 METHODS
+
+=head2 tm_new_object()
+
+This method initializes and returns the internal C<Template::Magic> object. You can override it if you know what you are doing, or you can simply ignore it ;-).
 
 =head1 PROPERTY and GROUP ACCESSORS
 
@@ -407,9 +431,19 @@ This property allows you to access and set the 'lookups' argument passed to the 
 
 This property allows you to access and set the 'template' argument passed to the Template::Magic::nprint() method (see L<Template::Magic/"nprint ( arguments )">). Set This property to an absolute path if you want bypass the C<tm_path> property.
 
+=head2 tm_object
+
+This property returns the internal C<Template::Magic> object.
+
+This is not intended to be used to generate the page output - that is generated automagically - but it could be useful to generate other outputs (e.g. messages for sendmail) by using the same template object, thus preserving the same arguments.
+
+B<Note>: You can change the default arguments of the object by using the C<tm_defaults> property, or you can completely override creation of the internal object by overriding the C<tm_new_object()> method.
+
 =head2 tm_defaults( arguments )
 
-This group accessor handles the Template::Magic constructor arguments that are used in the creation of the internal Template::Magic object. Use it to addsome more lookups your application could need, or finetune the behaviour if you know what are doing (see L<"How to add lookup locations"> and L<Template::Magic/"new ( [constructor_arrays] )">).
+This group accessor handles the Template::Magic constructor arguments that are used in the creation of the internal Template::Magic object. Use it to add some more lookups your application could need, or finetune the behaviour if you know what are doing (see L<"How to add lookup locations"> and L<Template::Magic/"new ( [constructor_arrays] )">).
+
+B<Note>: You can completely override the creation of the internal object by overriding the C<tm_new_object()> method.
 
 =head1 SUPPORT and FEEDBACK
 
@@ -424,6 +458,5 @@ More information at http://perl.4pro.net/?CGI::Application::Magic.
 All Rights Reserved. This module is free software. It may be used, redistributed and/or modified under the same terms as perl itself.
 
 =head1 CONTRIBUTION
-
 
 I always answer to each and all the message i receive from users, but I have almost no time to find, install and organize a mailing list software that could improve a lot the support to people that use my modules. Besides I have too little time to write more detailed documentation, more examples and tests. Your contribution would be precious, so if you can and want to help, just contact me. Thank you in advance.

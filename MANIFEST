@@ -1,4 +1,6 @@
-lib/Bundle/CGI/Application/Magic.pm
+lib/Apache/Application/Magic.pm
+lib/Apache/Application/Plus.pm
+lib/Bundle/Application/Magic.pm
 lib/CGI/Application/CheckRM.pm
 lib/CGI/Application/Magic.pm
 lib/CGI/Application/Plus.pm
@@ -8,15 +10,15 @@ magic_examples/all_defaults/mwa.pl
 magic_examples/all_defaults/tm/show_env.html
 magic_examples/all_defaults/tm/show_mix.html
 magic_examples/all_defaults/tm/start.html
-magic_examples/script_parsed_dir/lib/MagicWebApp.pm
-magic_examples/script_parsed_dir/lib/mwa.pl
-magic_examples/script_parsed_dir/README.txt
-magic_examples/script_parsed_dir/www/.htaccess
-magic_examples/script_parsed_dir/www/index.html
-magic_examples/script_parsed_dir/www/show_env.html
-magic_examples/script_parsed_dir/www/show_mix.html
+magic_examples/perl_side_include/lib/MagicWebApp.pm
+magic_examples/perl_side_include/README.txt
+magic_examples/perl_side_include/www/.htaccess
+magic_examples/perl_side_include/www/index.html
+magic_examples/perl_side_include/www/show_env.html
+magic_examples/perl_side_include/www/show_mix.html
 Makefile.PL
 MANIFEST			This list of files
+META.yml
 README
 t/01_cgiapp.t
 t/02_prerun.t
@@ -43,4 +45,3 @@ t/test/TestApp9.pm
 t/test/TestCGI.pm
 t/tm/ENV_RM.html
 t/tm/start.html
-META.yml                                 Module meta-data (added by MakeMaker)

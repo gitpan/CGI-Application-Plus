@@ -1,10 +1,5 @@
-# this application responds to 3 runmodes:
-# start, show_env and show_mix
-# in the default ./tm dir there are 3 templates:
-# start.html, show_env.html and show_mix.html
-
 ; package MagicWebApp
-; use base 'CGI::Application::Magic'
+; use base 'Apache::Application::Magic'
 
 # defaults are fine so nothing to define here
 

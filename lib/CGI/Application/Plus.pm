@@ -1,5 +1,5 @@
 package CGI::Application::Plus ;
-$VERSION = 1.02 ;
+$VERSION = 1.1 ;
 
 ; use strict
 ; use Carp
@@ -29,6 +29,15 @@ $VERSION = 1.02 ;
                             }
                          }
         }
+      , { name       => 'qparam'
+        , default    => sub
+                         { eval{ scalar $_[0]->query->Vars }
+                           || croak qq(The query object cannot "Vars", )
+                                  . qq(you cannot use the "qparam" )
+                                  . qq(property.)
+                         }
+        }
+
       )
 
 ######### PROPERTIES ############
@@ -42,7 +51,7 @@ $VERSION = 1.02 ;
         , default    => 'rm'
         }
       , { name       => 'query'
-        , default    => sub { $_[0]->cgiapp_get_query }
+        , default    => sub { shift()->cgiapp_get_query(@_) }
         , no_strict  => 1  # doesn't croak if fetched too late
         , validation => sub
                          { croak qq(Too late to set the query)
@@ -76,6 +85,7 @@ $VERSION = 1.02 ;
         }
       )
 
+
 ######### PARAM AUTOLOAD ############
 
 ; our $AUTOLOAD
@@ -104,7 +114,7 @@ $VERSION = 1.02 ;
 
 ; sub cgiapp_get_query
    { require CGI
-   ; CGI->new
+   ; CGI->new()
    }
    
 ; sub setup
@@ -113,8 +123,9 @@ $VERSION = 1.02 ;
          
 ######### METHODS ############
 
+
 ; sub run
-   { my ($s, $RM) = @_
+   {  my ($s, $RM) = @_
    ; $s->__STEP = 1
    ; unless ( defined $RM && length $RM )        # no RM from script
       { $RM = ref $s->mode_param eq 'CODE'
@@ -127,7 +138,6 @@ $VERSION = 1.02 ;
      else
       { $s->runmode = $RM                        # shitch RM
       }
-     
    ; $s->__STEP = 2
    ; $s->cgiapp_prerun( $RM )          # passed just for full compatibility
    ; $s->__STEP = 3
@@ -190,7 +200,7 @@ $VERSION = 1.02 ;
       }
    ; $s->stop_capture if $ENV{CGI_APP_RETURN_ONLY}   # testing only
    }
-  
+
 ######### OLD CGI APP ############
 
 ; BEGIN
@@ -247,15 +257,13 @@ $VERSION = 1.02 ;
 
 __END__
 
-=head1
-
 =head1 NAME
 
 CGI::Application::Plus - CGI::Application rewriting with several pluses
 
-=head1 VERSION 1.02
+=head1 VERSION 1.1
 
-Included in CGI-Application-Plus 1.02 distribution. The distribution includes:
+Included in CGI-Application-Plus 1.1 distribution. The distribution includes:
 
 =over
 
@@ -263,9 +271,17 @@ Included in CGI-Application-Plus 1.02 distribution. The distribution includes:
 
 CGI::Application rewriting with several pluses
 
+=item * Apache::Application::Plus
+
+Apache/mod_perl integration for CGI::Application::Plus
+
 =item * CGI::Application::Magic
 
 Template based framework for CGI applications
+
+=item * Apache::Application::Magic
+
+Apache/mod_perl integration for CGI::Application::Magic
 
 =item * CGI::Application::CheckRM
 
@@ -280,7 +296,7 @@ Checks run modes using Data::FormValidator
 =item Prerequisites
 
     Perl version >= 5.6.1
-    OOTools      >= 1.52
+    OOTools      >= 1.6
 
 =item CPAN
 
@@ -288,7 +304,7 @@ Checks run modes using Data::FormValidator
 
 If you want to install also all the prerequisites to use C<CGI::Application::Magic>), all in one easy step:
 
-    perl -MCPAN -e 'install Bundle::CGI::Application::Magic'
+    perl -MCPAN -e 'install Bundle::Application::Magic'
 
 =item Standard installation
 
@@ -312,46 +328,50 @@ In WebAppl.pm
 
 =head1 DESCRIPTION
 
-This module is a complete new stand alone reimplementation of C<CGI::Application> module (i.e. it is not a subclass). It adds several new features to your CGI::Application implementation, maintaining intact the old ones, so if some new feature is not useful to you, just use the old way that still works.
+This module is a complete new stand alone reimplementation of C<CGI::Application> module (i.e. it is not a subclass). It adds several new features to your C<CGI::Application> implementation, maintaining intact the old ones, so if some new feature is not useful to you, just use the old way that still works.
 
-Since all the 'old-features' are excellently documented in L<CGI::Application>, right now this documentation focuses only on the new features that this module implements exclusively. (please see also L<"CONTRIBUTION">)
+In simple words: with C<CGI::Application::Plus> you have all the old C<CGI::Application> features PLUS several new ones (including memory efficiency), if you stick on the old module you will have just a part of it.
 
-Since this documentation is not yet stand alone, you should integrate both documentation and please, be sure to understand that module before to switch to this one.
+B<Note>: Since all the old features are excellently documented in L<CGI::Application>, right now this documentation focuses only on the new features that it implements exclusively. At the moment this documentation is not yet stand alone, so you should integrate both documentation and if you have no knowledge of C<CGI::Application> yet, be sure to understand that module before to switch to this one.
 
 B<IMPORTANT NOTE>: If you write any script that rely on this module, you better send me an e-mail so I will inform you in advance about eventual planned changes, new releases, and other relevant issues that could speed-up your work. (see also L<"CONTRIBUTION">)
 
 =head2 Why yet another CGI::Application?
 
-I greatly apreciate the general philosophy of the cgiapp system but I wasn't satisfied with several aspect of its implementation, so I started to write a sub class. Very soon I realized that I would had to overriding at least the new, run and param methods. Then, after overriding all that, it would have been stupid to have to depend and to be limited from another module just for the few subs that remain original, so... I wrote this module that is a completely new and different approach to the same general metaphor. Just look at the source to see what I mean.
+I greatly apreciate the general philosophy of the cgiapp system but I wasn't satisfied with several aspects of its implementation, so I started to write a sub class. Very soon I realized that I would had to override at least the C<new()>, C<run()> and C<param()> methods. Then, after overriding all that, it would have been stupid to have to depend and to be limited by another module just for the few subs that remain original, so... I wrote this module with a completely new and different approach to the same general metaphor. Just look at the source to see what I mean.
 
-If you are thinking that this module is like reinventing the wheel... well... just think about how slow, unsure and unconfortable would be your car if it would use the first original hand-made-wooden wheels of several centuries ago :-).
+B<Note>: If you are thinking that this module is like reinventing the wheel... well... just think about how slow, unsure and unconfortable would be your car if it would use the first original hand-made-wooden wheels of several centuries ago :-).
 
-=head1 CGI::Application::Plus Vs CGI::Application
+=head2 mod_perl
 
-=head2 Exclusive Features and Improvements
+C<CGI::Application::Plus> is fully mod_perl 1 and 2 compatible (i.e. you can use it under both CGI and mod_perl). Anyway, if your application runs under mod_perl, you should consider to integrates it with Apache by using the L<Apache::Application::Plus|Apache::Application::Plus> module.
+
+=head1 Exclusive Features and Improvements
 
 This is the list of all the improvements and new features that you gain by using C<CGI::Application::Plus> instead of C<CGI::Application>.
 
-=head3 Properties
+=over
+
+=item * Properties
 
 Most of the old C<CGI::Application> methods fit well into the category of 'object property', and so they are implemented in the C<CGI::Application::Plus> module by using OOTools pragmas.
 
-B<Note>: A property is simply an accessor to an object value, used by methods. All the C<CGI::Application::Plus> properties are lvalue accessors, that means that you can create a reference to them, assign to them and apply a regex to them, (some have a default value, some have validation entry rules, etc.)
+B<Note>: A property is a lvalue accessor to an object value. This means that you can create a reference to them, assign to them and apply a regex to them, (some have a default value, some have validation entry rules, etc.)
 
     $s->runmode = 'myStart'     # 'runmode' is a property accessor
     delete $s->param->{myParam} # 'param' is a property group accessor
 
-=head3 new ()
+=item * new ()
 
-The new() method accept more options: see L<new()|"new ( [ properties ] )">.
+The new() method accept more arguments, this is useful to let your user more flexibility: see L<new()|"new ( [ properties ] )">.
 
-=head3 run ()
+=item * run ()
 
-The run() method accept more options: see L<run()|"new ( [ runmode ] )">.
+The run() method accept more arguments; see L<run()|"new ( [ runmode ] )">.
 
-=head3 param handling
+=item * param handling
 
-The C<param()> accessor is a property group acccessor, that means that you can set, add, retrieve, delete, check for existance with only one method. You can use it as a parameter to the new() method as well. (see L<param()|"param ( [ parameters ] )">)
+The C<param()> accessor is a property group accessor, that means that you can set, add, retrieve, delete, check for existance with only one method. You can use it as a parameter to the new() method as well. (see L<param()|"param ( [ parameters ] )">)
 
     # pass a parameter to the new object
     $webapp = WebApp->new(param => {myPar => 'myPAR'})
@@ -374,11 +394,15 @@ The C<param()> accessor is a property group acccessor, that means that you can s
     # delete a parameter
     delete $s->param->{myPar} ;
 
-=head3 header handling
+=item * header handling
 
-The header_props() is a property group acccessor, so you can set, add, retrieve, delete headers exactly like what you can do with the param() accessor. (No needs of any C<add_header()> method)
+The header_props() is a property group accessor, so you can set, add, retrieve, delete headers exactly like what you can do with the param() accessor. (No needs of any C<add_header()> method)
 
-=head3 page property
+=item * query parameter handling
+
+The qparam() is a property group accessor that allows you to set, add, retrieve, delete query parameters exactly like what you can do with the param() accessor.
+
+=item * page property
 
 Under old C<CGI::Application> implementation, a run method is espected to return the content of the page (or a reference to it) to send to the client.
 
@@ -386,7 +410,7 @@ C<CGI::Application::Plus> can work that way as well, but it adds the new C<page>
 
 B<Note>: Just completely ignore the C<page> property to exactly reproduce the same old C<CGI::Application> behaviour. Anyway, this possibility is here just for compatibility, and it is deprecated: please always use the C<page> property.
 
-=head3 run method prefix
+=item * run method prefix
 
 I hate to write twice the same information, because it is silly, annoying and error prone, so... unless you need to address a run mode to some particular method you can completely avoid the C<run_modes()> method and keep safe your application by using a prefixed name for your run mode methods:
 
@@ -400,19 +424,19 @@ I hate to write twice the same information, because it is silly, annoying and er
 
 B<Note>: You can set the C<RM_prefix> property to change the default prefix.
 
-=head3 run mode switching
+=item * run mode switching
 
 You have an useful method to switch to a run mode (see L<switch_to()|"switch_to ( runmode [, arguments] )">)
 
-=head3 overriding for power users
+=item * overriding for power users
 
 All the internal data have an accessor that you can override to have it changed across the whole class, and in the code there are no dirty statements like C<< $self->{SOME_INTERNAL_STUFF} = 'something' >> that bypass the accessor.
 
-=head3 Efficiency
+=item * Efficiency
 
-Under normal environment this module should load a little faster and use less memory than C<CGI::Application> thanks to the far shorter code and the use of OOTools pragmas, that implements efficient closure accessors at compile time. (see L<Object::props>, L<Object::groups>, L<Class::constr>)
+Under normal environment this module should load a little faster and use less memory than C<CGI::Application> thanks to the far shorter code and the use of OOTools pragmas, that implements efficient closure accessors at compile time. (see L<Object::props>, L<Object::groups>, L<Class::constr>).
 
-=head3 Super Classes
+=item * Super Classes
 
 If you write a super class and need some more properties for your class, you can use the OOTools pragmas for free (memory). They are already loaded by this module and allows you to give a more consistent interface to your users, creating very efficient accessors at compile time with just a couple of lines. Take a look at the source of the modules in this distribution to understand what I mean.
 
@@ -488,11 +512,7 @@ Used to pass a template path with the C<new()> method. It's still working but de
 
 =item PARAMS
 
-Used to pass a reference to an hash (containing some parameters) with the C<new()> method. It's still working but deprecated. You can use several alternatives with C<param()> property group acccessor or accessing parameters directly. (see L<param()> property group acccessor)
-
-    $webapp = WebApp->new(param => { myParam => 'myPARAM'} )
-    # same thing
-    $po = myAppl->new(myParam => 'myPARAM')
+Used to pass a reference to an hash (containing some parameters) with the C<new()> method. It's still working but deprecated. You can use several alternatives with C<param()> property group accessor or accessing parameters directly. (see L<param()> property group accessor)
 
 =item start_mode ()
 
@@ -524,22 +544,26 @@ Please integrates the documentation in this section with L<CGI::Application>
 
 =head2 new ( [ properties ] )
 
-The new() method accepts and sets any known object property, storing any unknow property as a new parameter. You can pass to the new() method all the property you usually set with the setup() or cgiapp_init() metods that can however set (override) them as usual. This just adds a new flexible possibility to configure your application not from inside the application module, but from the cgi script that uses it:
+The new() method accepts and sets any known object property, storing any unknow property as a new parameter. You can pass to the new() method all the property you usually set with the setup() or cgiapp_init() metods that can however set (override) them as usual.
 
-    # not all useful here, but possible
+This feature just adds a new flexible possibility to configure your application or super class not from inside the application module, but from the cgi script that uses it:
+
+    # not always useful here, but possible
     $webapp = WebApp->new(runmode    => 'mySpecialRunMode',
                           mode_param => 'mm' ,
                           runmodes   => [ qw|one two| ] ,
                           myParam    => 'myPARAM' ,  # sets param 'myParam'
                           ... more here...    )
 
+B<Note>: This feature makes it possible modules like L<Apache::Application::Plus|Apache::Application::Plus> and L<Apache::Application::Magic|Apache::Application::Plus>, that initialize the object with more properties.
+
 =head2 run ( [ runmode ] )
 
-You can directly pass a run mode to the run() method, so forceing the application to run that run mode (e.g. useful when testing a particular run mode):
+You can directly pass a run mode to the run() method, so forcing the application to run that run mode (e.g. useful when testing a particular run mode):
 
     $webapp->run('mySpecialRunmode');
 
-B<Note for power users only>: The run() method is splitted into 3 internal methods ( run(), _run_runmode(), _send() ) so you can eventually selectively override them in a more flexible way.
+B<Note for power users only>: The run() method is splitted into 3 internal methods ( C<run()>, C<_run_runmode()>, C<_send()> ) so you can eventually selectively override them in a more flexible way.
 
 =head2 switch_to ( runmode [, arguments] )
 
@@ -552,11 +576,11 @@ This method allows you to switch to a run mode, e.g. useful when validating run 
       ...
     }
 
-You should use this method inside the C<cgiapp_prerun()> method too. (old way was to set the prerun_mode())
+You should use this method inside the C<cgiapp_prerun()> method too. (old way was to set the C<prerun_mode()>, now deprecated)
 
 =head2 start_capture()
 
-Use this method to start to capture the current selected filehandler (usually STDOUT). All the printed output will be captured and will not go in the selected filehandler until you use the Cstop_capture()> method.
+Use this method to start to capture the current selected filehandler (usually STDOUT). All the printed output will be captured and will not go in the selected filehandler until you use the C<stop_capture()> method.
 
 B<Note>: this method is internally called when C<$ENV{CGI_APP_RETURN_ONLY}> is set to a true value.
 
@@ -582,7 +606,7 @@ This method (not to be confused with the 'AUTOLOAD' run mode) implements an hand
     # and to retrieve
     $p = $s->myPar
 
-If you don't like this feature, just override the AUTOLOAD method. If your application implements its own AUTOLOAD sub and you want to keep this possibility just fall back on the SUPER class method when needed.
+B<Note>: If you don't like this feature, just override the AUTOLOAD method. If your application implements its own AUTOLOAD sub and you want to keep this possibility just fall back on the SUPER class method when needed.
 
 =head1 OVERRIDE METHODS
 
@@ -599,6 +623,9 @@ This accessor handles the parameters of your application
     # pass a parameter to the new object
     $webapp = WebApp->new(param => {myPar => 'myPAR'})
     
+    # same thing using the AUTOLOAD sub
+    $webapp = WebApp->new(myParam => 'myPARAM')
+ 
     $s->param(myPar1=>'myPARAM1',
               myPar2=>'myPARAM2') ;
     
@@ -613,6 +640,26 @@ This accessor handles the parameters of your application
     
     # delete a parameter
     delete $s->param->{myPar} ;
+
+=head2 qparam( [ query parameter ] )
+
+This accessor works for query parameters exactly like param() works for parameters. It's very handy:
+
+    # instead of do
+    $q = $s->query ;
+    $mQpar = $q->param('myQparam') ;
+    
+    # you can do this
+    $mQpar = $s->qparam('myQparam') ;
+    
+    # and or interacting directly with the query HASH
+    delete $s->qparam->{myQparam} ;   # deleting
+    exists $s->qparam->{myQparam} ;   # check existance
+    @fields = $s->qparam ;            # list context
+    
+    # and all the other possibilities of the property group accessor
+
+B<Note>: This accessor is backed by the C<Vars()> CGI function, so IF (and only if) you implement a different query object not based on CGI.pm, AND the object you use 'can' not "Vars", THEN you cannot use this method.
 
 =head2 header_props( [ headers ] )
 
@@ -631,16 +678,17 @@ This accessor manages the declared run_modes. It works as all the other accessor
         'mode3' => 'mode3'
     );
 
-Please, consider that in order to reduce redundancy in your code, you can use safely the C<RM_prefix> property, to avoid to declare run modes and run methods (see L<"run method prefix">)
+B<Note>: Please, consider that in order to reduce redundancy in your code, you can use safely the C<RM_prefix> property, to avoid to declare run modes and run methods (see L<"run method prefix">)
 
 =head1 PROPERTY ACCESSORS
 
 All the property accessors are lvalue method that means that you can create a reference to them, assign to them and apply a regex to them, (some have a default value, some have validation entry rules, etc.) Old assignation will work as well
 
-   $s->property = 'value'
-   
-   #same thing
+   # old way still works
    $s->property('value')
+   
+   # new way
+   $s->property = 'value'
 
 You can use them as a parameter to the new() method as well.
 
@@ -683,7 +731,7 @@ This property allows you to access and set the type of header your application w
 
 =head2 page
 
-This property allows you to access and set the content of the page (or a reference to it) to send to the client. A run method should set the C<page> property to some page content, to a reference to it or to a CODE reference that will print the output on its own. in this case the refereced code will be called after the printing of the headers.
+This property allows you to access and set the content of the page (or a reference to it) to send to the client. A run method should set the C<page> property to some page content, to a reference to it or to a CODE reference that will print the output on its own. In this case the refereced code will be called after the printing of the headers.
 
     sub RM_myRunMode
     {
@@ -710,7 +758,7 @@ Internal property used to control exceptions.
 
 =head2 $ENV{CGI_APP_RETURN_ONLY}
 
-When set to a true value it cause the capture of the output being printed, so it will not be sent to STDOUT, besides the run() method will return the captured output, so allowing you to eventually test your sub classes.
+When set to a true value it causes the capture of the output being printed, so it will not be sent to STDOUT; besides the run() method will return the captured output, so allowing you to eventually test your sub classes.
 
    $ENV{CGI_APP_RETURN_ONLY} = 1
    

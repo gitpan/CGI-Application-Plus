@@ -1,7 +1,7 @@
 ; use ExtUtils::MakeMaker
 
 ; my $dist = 'CGI::Application::Plus'
-; my $vers = '1.02'
+; my $vers = '1.1'
 
 ; WriteMakefile
    ( NAME           => $dist
@@ -11,9 +11,9 @@
        , ABSTRACT   => ' CGI::Application rewriting with several pluses'
        )
      : ()
-   , PREREQ_PM      => { 'Class::constr'     => '1.52'
-                       , 'Class::props'      => '1.52'
-                       , 'Object::props'     => '1.52'
+   , PREREQ_PM      => { 'Class::constr'     => '1.6'
+                       , 'Class::props'      => '1.6'
+                       , 'Object::props'     => '1.6'
                        }
    )
 

@@ -1,5 +1,5 @@
-package Bundle::CGI::Application::Magic;
-$VERSION = 1.02;
+package Bundle::Application::Magic;
+$VERSION = 1.1;
 __END__
 
 =head1 NAME
@@ -25,6 +25,8 @@ Class::constr           - used by Template::Magic::Zone
 Class::props            - used by Template::Magic::Zone
 
 Object::props           - used by Template::Magic::Zone
+
+Object::groups          - used by CGI::Application::Magic
 
 Template::Magic         - the Template::Magic distribution
 

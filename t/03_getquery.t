@@ -6,7 +6,6 @@ use CGI::Application::Plus::Util;
 
 # Prevent output to STDOUT
 $ENV{CGI_APP_RETURN_ONLY} = 1;
-$ENV{OLD_CGI_APP_COMPATIBLE} = 1;
 
 BEGIN
 {
