@@ -1,5 +1,8 @@
 package CGI::Application::Plus::Util ;
-$VERSION = 1.15 ;
+$VERSION = 1.16 ;
+
+# This file uses the "Perlish" coding style
+# please read http://perl.4pro.net/perlish_coding_style.html
 
 ; use strict
 

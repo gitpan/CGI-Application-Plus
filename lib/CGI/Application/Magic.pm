@@ -1,5 +1,8 @@
 package CGI::Application::Magic ;
-$VERSION = 1.15 ;
+$VERSION = 1.16 ;
+
+# This file uses the "Perlish" coding style
+# please read http://perl.4pro.net/perlish_coding_style.html
 
 ; use base 'CGI::Application::Plus'
 ; use strict
@@ -101,9 +104,9 @@ __END__
 
 CGI::Application::Magic - Template based framework for CGI applications
 
-=head1 VERSION 1.15
+=head1 VERSION 1.16
 
-Included in CGI-Application-Plus 1.15 distribution.
+Included in CGI-Application-Plus 1.16 distribution.
 
 The latest versions changes are reported in the F<Changes> file in this distribution.
 
@@ -159,6 +162,8 @@ From the directory where this file is located, type:
     make
     make test
     make install
+
+B<Note>: The installation of this module runs an automatic version check connection which will warn you in case a newer version is available: please don't use old versions, because I can give you full support only for current versions. Besides, since CPAN does not provide any download statistic to the authors, this check allows me also to keep my own installation counter. Version checking is transparent to regular users, while CPAN testers should skip it by running the Makefile.PL with NO_VERSION_CHECK=1.
 
 =back
 
