@@ -1,5 +1,11 @@
 CGI-Application-Plus Latest Versions Changes
 
+version 1.13
+- Changes in POD
+- Fixed outdated Bundle informations
+
+Version 1.12
+- added APPENDIX POD section
 
 Version 1.11
 - Fixed Apache::Application::Magic::tm_template() unintended redundancy:

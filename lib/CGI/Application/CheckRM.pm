@@ -1,5 +1,5 @@
 package CGI::Application::CheckRM ;
-$VERSION = 1.12 ;
+$VERSION = 1.13 ;
 
 ; use strict
 ; use Carp
@@ -53,9 +53,9 @@ __END__
 
 CGI::Application::CheckRM - Checks run modes using Data::FormValidator
 
-=head1 VERSION 1.12
+=head1 VERSION 1.13
 
-Included in CGI-Application-Plus 1.12 distribution. The distribution includes:
+Included in CGI-Application-Plus 1.13 distribution. The distribution includes:
 
 =over
 
@@ -88,7 +88,7 @@ Checks run modes using Data::FormValidator
 
 If you want to install also all the prerequisites to use C<CGI::Application::Magic>), all in one easy step:
 
-    perl -MCPAN -e 'install Bundle::CGI::Application::Magic'
+    perl -MCPAN -e 'install Bundle::Application::Magic'
 
 =item Standard installation
 

@@ -5,7 +5,7 @@
 
 ; package MagicWebApp::Lookups
 # all the runtime values of variables and subs
-# will substituted in any template that uses
+# will be substituted in any template that uses
 # a label or block with a matching identifier (name)
 # look at the templates to see how they are used
 

@@ -1,14 +1,14 @@
 package Bundle::Application::Magic;
-$VERSION = 1.12;
+$VERSION = 1.13;
 __END__
 
 =head1 NAME
 
-Bundle::CGI::Application::Magic - A bundle to install CGI::Application::Magic plus all related prerequisites.
+Bundle::Application::Magic - A bundle to install CGI::Application::Magic plus all related prerequisites.
 
 =head1 SYNOPSIS
 
-    perl -MCPAN -e 'install Bundle::CGI::Application::Magic'
+    perl -MCPAN -e 'install Bundle::Application::Magic'
 
 =head1 CONTENTS
 

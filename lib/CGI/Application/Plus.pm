@@ -1,5 +1,5 @@
 package CGI::Application::Plus ;
-$VERSION = 1.12 ;
+$VERSION = 1.13 ;
 
 ; use strict
 ; use Carp
@@ -258,9 +258,9 @@ __END__
 
 CGI::Application::Plus - CGI::Application rewriting with several pluses
 
-=head1 VERSION 1.12
+=head1 VERSION 1.13
 
-Included in CGI-Application-Plus 1.12 distribution. The distribution includes:
+Included in CGI-Application-Plus 1.13 distribution. The distribution includes:
 
 =over
 
@@ -325,11 +325,9 @@ In WebAppl.pm
 
 =head1 DESCRIPTION
 
-This module is a complete new and stand alone reimplementation of C<CGI::Application> module (i.e. B<it is not a subclass>). This means that it implements all the C<CGI::Application> methods on its own, and adds several new features to your C<CGI::Application> implementation, however maintaining intact the old ones.
+This module is a complete new and stand alone reimplementation of C<CGI::Application> module (i.e. B<it is not a subclass>). This means that it implements all the C<CGI::Application> methods on its own, and adds several new features to your C<CGI::Application> implementation, however maintaining intact the old ones (sort of backward compatibility just if you are about to switch from CGI::Application).
 
-In simple words: with C<CGI::Application::Plus> you have all the old C<CGI::Application> features PLUS several new ones (including memory efficiency), if you stick on the old module you will have just a part of it.
-
-If some new feature is not useful to you, just use the old way that still works (see also L<"CGI::Application" compatibility">).
+In simple words: with C<CGI::Application::Plus> you have all the old C<CGI::Application> features plus some new ones (including memory efficiency), if some new feature is not useful to you, just use the old way that still works (see also L<"CGI::Application" compatibility">).
 
 B<Note>: Since all the old features are excellently documented in L<CGI::Application>, right now this documentation focuses only on the new features that it implements exclusively. At the moment this documentation is not yet stand alone, so you should integrate both documentation and if you have no knowledge of C<CGI::Application> yet, be sure to understand that module before to switch to this one.
 
@@ -339,11 +337,9 @@ B<IMPORTANT NOTE>: If you write any script that rely on this module, you better 
 
 I greatly apreciate the general philosophy of the cgiapp system but I wasn't satisfied with several aspects of its implementation, so I started to write a sub class. Very soon I realized that I would had to override at least the C<new()>, C<run()> and C<param()> methods. Then, after overriding all that, it would have been stupid to have to depend and to be limited by another module just for the few subs that remain original, so... I wrote this module with a completely new and different approach to the same general metaphor. Just look at the source to see what I mean, or read L<"APPENDIX">.
 
-B<Note>: If you are thinking that this module is like reinventing the wheel... well... just think about how slow, unsure and unconfortable would be your car if it would use the first original hand-made-wooden wheels of several centuries ago :-).
-
 =head2 mod_perl
 
-C<CGI::Application::Plus> is fully mod_perl 1 and 2 compatible (i.e. you can use it under both CGI and mod_perl). Anyway, if your application runs under mod_perl, you should consider to integrate it with Apache by using the L<Apache::Application::Plus|Apache::Application::Plus> module.
+C<CGI::Application::Plus> is fully mod_perl 1 and 2 compatible (i.e. you can use it under both CGI and mod_perl). Anyway, if your application runs under mod_perl, you should consider to integrate it with the Apache server by using the L<Apache::Application::Plus|Apache::Application::Plus> module.
 
 =head1 Exclusive Features and Improvements
 
@@ -441,9 +437,11 @@ If you write a super class and need some more properties for your class, you can
 
 =head1 CGI::Application compatibility
 
-An old C<CGI::Application> implementation should run unchanged under C<CGI::Application::Plus> as well, taking the advantages of all the pluses of this module (this module pass all the tests of CGI::Application 3.1, but if you found some incompatibilities, please tell me, and I will fix it).
+This module offers a compatible CGI::Application API, only aimed to allow smoother migrations to CGI::Application::Plus API, in case you have an old CGI::Application implementation to migrate, or if you are already familiar with the CGI::Application interface.
 
-B<Note>: The compatibility could be compromised if your application used some dirty hack that bypass accessors (i.e. some statements that interacts with the internal hash structure of the C<CGI::Application> class, something like C<< $self->{__PARAMS} >>, because C<CGI::Application::Plus> implements a more consistent but different internal structure).
+Even if this compatibility will probably be maintained with the future versions of CGI::Application (just for the same purpose), please, don't rely on it for your new applications.
+
+B<Note>: An old C<CGI::Application> implementation should run unchanged under C<CGI::Application::Plus> as well, but the compatibility could be compromised if your application uses some dirty hack that bypass accessors (i.e. some statements that interacts with the internal hash structure of the C<CGI::Application> class, something like C<< $self->{__PARAMS} >>, because C<CGI::Application::Plus> implements a more consistent but different internal structure).
 
 =head2 param()
 
@@ -791,6 +789,24 @@ If you need support or if you want just to send me some feedback or request, ple
 
 All Rights Reserved. This module is free software. It may be used, redistributed and/or modified under the same terms as perl itself.
 
+=head1 DISCLAIMER
+
+=over
+
+=item 1
+
+CGI::Application::Plus is a stand alone new reimplementation of CGI::Application independently developed. The author of CGI::Application::Plus is not related in any way with the authors of CGI::Application.
+
+=item 2
+
+CGI::Application::Plus project is not to be intended as the replacement or substitution of the CGI::Application project. CGI::Application::Plus and CGI::Application are two parallel projects that are both independently supported by their own authors.
+
+=item 3
+
+The CGI::Application::B<Plus> namespace refers just to the fact that it uses the same CGI::Application API, but offers pluses that CGI::Application does not offer. It is not the intention of the author claiming in any way its "superiority". You are invited to compare both sources and judge yourself what is the best fit for you applications. (see also L<"APPENDIX">)
+
+=back
+
 =head1 CREDITS
 
 Even if C<CGI::Application::Plus> has been independently developed, special thanks go to anyone that contributes to the creation of the C<CGI::Application> module. The merit of that great idea still belong to them.
@@ -958,7 +974,7 @@ Now let's see the CGI::Application implementation of the same methods:
         return (%$rr_m);
     }
 
-The first is not only far more concise and so, far more simple to maintain, but is more memory efficient because it uses the same (closure) code of a few lines, to implements all the methods at compile time. It's similar to load just 1 method instead of 4. "This technique saves on both compile time and memory use, and is less error-prone as well, since syntax checks happen at compile time." (quoted from "Function templates" in the F<perlref> manpage).
+The first is not only far more concise and so, far more simple to maintain, but is more memory efficient because it uses the same (closure) code of a few lines, to implements all the methods at compile time. It's similar to load just 1 method instead of 4. "This technique saves on both compile time and memory use, and is less error-prone as well, since syntax checks happen at compile time." (quoted from "Function Templates" in the F<perlref> manpage).
 
 If the programmer needs to add some more accessor methods of this type (groups) to his subclass (e.g as the qparam() method that access the query parameter, or the tm_defaults() of C<CGI::Application::Magic>), he can do it for free (the C<Object::groups> closure is already loaded) and in just the lines of code in this example:
 
@@ -974,12 +990,10 @@ More bargains for the other properties accessor methods! With just another closu
 
     mode_param
     query
-    runmode (start_mode, prerun_mode)
+    runmode (start_mode, get_current_runmode)
     tmpl_path
     header_type
 
-and all the other properties you need, with a the "syntactic sugar" that allows your properties to be lvalue, (so you can create a reference to them, assign to them and apply a regex to them). Not to mention that they can have defaults, validation rules, and some other options that you don't need to write each time in a new method (see C<OOTools>  pragmas documentation). They have also another plus: you can initialize each property by passing it as argument to the new() method.
+and all the other properties you need, with a the "syntactic sugar" that allows your properties to be lvalue, (so you can create a reference to them, assign to them and apply a regex to them). Not to mention that they can have defaults, validation rules, and some other options that you don't need to write each time in a new method (see C<OOTools>  pragmas documentation). They have also another plus: you can initialize each property by passing it as an argument to the new() method.
 
 And since C<CGI::Application::Plus> passes the same tests of C<CGI::Application>, if you use it as your base class, you will have all that for free.
-
-I think this is a Really Good Reason to rewrite the C<CGI::Application> module from the ground up.

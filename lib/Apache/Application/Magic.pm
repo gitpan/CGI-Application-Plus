@@ -1,5 +1,5 @@
 package Apache::Application::Magic ;
-$VERSION = 1.12 ;
+$VERSION = 1.13 ;
 
 ; use strict
 ; use base 'CGI::Application::Magic'
@@ -27,9 +27,9 @@ __END__
 
 Apache::Application::Magic - Apache/mod_perl integration for CGI::Application::Magic
 
-=head1 VERSION 1.12
+=head1 VERSION 1.13
 
-Included in CGI-Application-Plus 1.12 distribution. The distribution includes:
+Included in CGI-Application-Plus 1.13 distribution. The distribution includes:
 
 =over
 
