@@ -1,5 +1,5 @@
 package CGI::Application::CheckRM ;
-$VERSION = 1.17 ;
+$VERSION = 1.18 ;
 
 # This file uses the "Perlish" coding style
 # please read http://perl.4pro.net/perlish_coding_style.html
@@ -56,9 +56,9 @@ __END__
 
 CGI::Application::CheckRM - Checks run modes using Data::FormValidator
 
-=head1 VERSION 1.17
+=head1 VERSION 1.18
 
-Included in CGI-Application-Plus 1.17 distribution.
+Included in CGI-Application-Plus 1.18 distribution.
 
 The latest versions changes are reported in the F<Changes> file in this distribution.
 
