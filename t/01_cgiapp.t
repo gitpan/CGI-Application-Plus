@@ -208,7 +208,7 @@ ok ((ref($ta_obj) && $ta_obj->isa('CGI::Application::Plus')))
 
 
 # Test 18: Can we add params in batches?
-{
+{  no warnings;
 	my $ta_obj;
 
 	$ta_obj = TestApp5->new(
@@ -222,7 +222,7 @@ ok ((ref($ta_obj) && $ta_obj->isa('CGI::Application::Plus')))
 
 	# Do params set via new still get set?
 	my $pt1 = 0;
-	@plist = $ta_obj->param();
+	@plist = keys %{$ta_obj->param()};
 	$pt1 = 1 if (
 		(scalar(@plist) == 2)
 		&& (grep {$_ eq 'P1'} @plist) 
@@ -240,7 +240,7 @@ ok ((ref($ta_obj) && $ta_obj->isa('CGI::Application::Plus')))
 	my $pt2 = 0;
 	my $pt2val = $ta_obj->P2;
 	$ta_obj->param('P3', 'three');
-	@plist = $ta_obj->param();
+	@plist = keys %{$ta_obj->param()};
 	$pt2 = 1 if (
 		(scalar(@plist) == 3)
 		&& (grep {$_ eq 'P1'} @plist) 
@@ -264,7 +264,7 @@ ok ((ref($ta_obj) && $ta_obj->isa('CGI::Application::Plus')))
 		'P4' => 'four',
 		'P5' => 'five'
 	);
-	@plist = $ta_obj->param();
+	@plist = keys %{$ta_obj->param()};
 	$pt3 = 1 if (
 		(scalar(@plist) == 5)
 		&& (grep {$_ eq 'P1'} @plist) 
@@ -292,7 +292,7 @@ ok ((ref($ta_obj) && $ta_obj->isa('CGI::Application::Plus')))
 		'P6' => 'six',
 		'P7' => 'seven',
 	});
-	@plist = $ta_obj->param();
+	@plist = keys %{$ta_obj->param()};
 	$pt4 = 1 if (
 		(scalar(@plist) == 7)
 		&& (grep {$_ eq 'P1'} @plist) 
@@ -321,7 +321,7 @@ ok ((ref($ta_obj) && $ta_obj->isa('CGI::Application::Plus')))
 	my $pt5 = 0;
 	$ta_obj->param('P8', 'eight');
 	my $pt5val = $ta_obj->param('P8');
-	@plist = $ta_obj->param();
+	@plist = keys %{$ta_obj->param()};
 	$pt5 = 1 if (
 		(scalar(@plist) == 8)
 		&& (grep {$_ eq 'P1'} @plist)

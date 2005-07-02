@@ -43,6 +43,8 @@ t/test/TestApp7.pm
 t/test/TestApp8.pm
 t/test/TestApp9.pm
 t/test/TestCGI.pm
+t/test_pod.t
+t/test_pod_coverage.t
 t/tm/ENV_RM.html
 t/tm/start.html
 META.yml                                 Module meta-data (added by MakeMaker)

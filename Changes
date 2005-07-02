@@ -1,5 +1,10 @@
 CGI-Application-Plus Latest Versions Changes
 
+
+Version 1.2
+- Updated tests and POD to the new OOTools 2 behaviour.
+- A few minor changes
+
 Version 1.19
 - Removed the - now outdated - note in the Makefile.PL
 

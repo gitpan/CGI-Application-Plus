@@ -1,10 +1,10 @@
 package CGI::Application::Plus ;
-$VERSION = 1.19 ;
+$VERSION = 1.2 ;
+use strict ;
 
 # This file uses the "Perlish" coding style
 # please read http://perl.4pro.net/perlish_coding_style.html
 
-; use strict
 ; use Carp
 
 ######### NEW ############
@@ -257,13 +257,15 @@ $VERSION = 1.19 ;
 
 __END__
 
+=pod
+
 =head1 NAME
 
 CGI::Application::Plus - CGI::Application rewriting with several pluses
 
-=head1 VERSION 1.19
+=head1 VERSION 1.2
 
-Included in CGI-Application-Plus 1.19 distribution.
+Included in CGI-Application-Plus 1.2 distribution.
 
 The latest versions changes are reported in the F<Changes> file in this distribution.
 
@@ -442,6 +444,8 @@ Under normal environment this module should load faster and use less memory than
 
 If you write a super class and need some more properties for your class, you can use the OOTools pragmas for free (memory). They are already loaded by this module and allows you to give a more consistent interface to your users, creating very efficient accessors at compile time with just a couple of lines. Take a look at the source of the modules in this distribution to understand what I mean. (see also L<"APPENDIX">)
 
+=back
+
 =head1 CGI::Application compatibility
 
 This module offers a compatible CGI::Application API, only aimed to allow smoother migrations to CGI::Application::Plus API, in case you have an old CGI::Application implementation to migrate, or if you are already familiar with the CGI::Application interface.
@@ -460,6 +464,7 @@ This module implements on purpose a little but useful difference that should not
     $par = $s->param(myPar1=>'myPARAM1',  # $par is undef
                      myPar2=>'myPARAM2') ;
     $par = $s->param('myPar') ;           # $par eq 'myPARAM'
+    @params = $s->param()                 # keys %$par
     
     # CGI::Application::Plus param() in scalar context
     $par = $s->param() ;                  # ref $par eq 'HASH'
@@ -467,8 +472,9 @@ This module implements on purpose a little but useful difference that should not
     $par = $s->param(myPar1=>'myPARAM1',  # ref $par eq 'HASH'
                      myPar2=>'myPARAM2') ;
     $par = $s->param('myPar') ;           # $par eq 'myPARAM'
+    @params = $s->param()                 # dereferenced
 
-As you see, in scalar context (no difference in list context) the C<param()> metod returns the reference to the underlying hash containing the parameters. This allows you to interact directly with the whole hash, or checking and deleting single parameters very easily:
+As you see, in scalar context the C<param()> metod returns the reference to the underlying hash containing the parameters. This allows you to interact directly with the whole hash, or checking and deleting single parameters very easily:
 
     $P = $s->param ;
     while ( my ($p, $v) = each %$P )
@@ -479,6 +485,8 @@ As you see, in scalar context (no difference in list context) the C<param()> met
     
     # delete a parameter
     delete $s->param->{myPar} ;
+
+In list context the param() returns a copy of the parameter hash.
 
 =head2 cgiapp_postrun()
 
@@ -772,20 +780,6 @@ When set to a true value it causes the capture of the output being printed, so i
       print 'ÍT WORKS!'
    }
 
-=head1 TO DO
-
-=over
-
-=item *
-
-Improve exception handling
-
-=item *
-
-Make this documentation stand alone
-
-=back
-
 =head1 SUPPORT and FEEDBACK
 
 If you need support or if you want just to send me some feedback or request, please use this link: http://perl.4pro.net/?CGI::Application::Plus.
@@ -1004,3 +998,5 @@ More bargains for the other properties accessor methods! With just another closu
 and all the other properties you need, with a the "syntactic sugar" that allows your properties to be lvalue, (so you can create a reference to them, assign to them and apply a regex to them). Not to mention that they can have defaults, validation rules, and some other options that you don't need to write each time in a new method (see C<OOTools>  pragmas documentation). They have also another plus: you can initialize each property by passing it as an argument to the new() method.
 
 And since C<CGI::Application::Plus> passes the same tests of C<CGI::Application>, if you use it as your base class, you will have all that for free.
+
+=cut

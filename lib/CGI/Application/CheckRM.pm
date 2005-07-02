@@ -1,10 +1,10 @@
 package CGI::Application::CheckRM ;
 $VERSION = 1.19 ;
+use strict ;
 
 # This file uses the "Perlish" coding style
 # please read http://perl.4pro.net/perlish_coding_style.html
 
-; use strict
 ; use Carp
 ; use Data::FormValidator
 

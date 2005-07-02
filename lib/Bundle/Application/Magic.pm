@@ -1,5 +1,5 @@
-package Bundle::Application::Magic;
-$VERSION = 1.19;
+; package Bundle::Application::Magic
+
 __END__
 
 =head1 NAME

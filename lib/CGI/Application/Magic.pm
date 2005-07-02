@@ -1,11 +1,12 @@
 package CGI::Application::Magic ;
-$VERSION = 1.19 ;
+$VERSION = 1.2 ;
+use strict ;
 
 # This file uses the "Perlish" coding style
 # please read http://perl.4pro.net/perlish_coding_style.html
 
 ; use base 'CGI::Application::Plus'
-; use strict
+
 ; use Carp
 ; use File::Spec
 ; use Template::Magic qw| -compile
@@ -100,13 +101,15 @@ $VERSION = 1.19 ;
 
 __END__
 
+=pod
+
 =head1 NAME
 
 CGI::Application::Magic - Template based framework for CGI applications
 
-=head1 VERSION 1.19
+=head1 VERSION 1.2
 
-Included in CGI-Application-Plus 1.19 distribution.
+Included in CGI-Application-Plus 1.2 distribution.
 
 The latest versions changes are reported in the F<Changes> file in this distribution.
 
@@ -471,3 +474,5 @@ If you need support or if you want just to send me some feedback or request, ple
 © 2004 by Domizio Demichelis.
 
 All Rights Reserved. This module is free software. It may be used, redistributed and/or modified under the same terms as perl itself.
+
+=cut
