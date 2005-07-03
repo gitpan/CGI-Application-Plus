@@ -448,6 +448,8 @@ If you write a super class and need some more properties for your class, you can
 
 =head1 CGI::Application compatibility
 
+B<IMPORTANT>: This API is compatible with the CGI::Application 3.1. The API of successive CGI::Application versions may or may not work as well; I have no plan to update this module to maintain API compatibility, because it has evolved in the more powerful, flexible and complete L<CGI::Builder|CGI::Builder> framework>.
+
 This module offers a compatible CGI::Application API, only aimed to allow smoother migrations to CGI::Application::Plus API, in case you have an old CGI::Application implementation to migrate, or if you are already familiar with the CGI::Application interface.
 
 Even if this compatibility will probably be maintained with the future versions of CGI::Application (just for the same purpose), please, don't rely on it for your new applications.
