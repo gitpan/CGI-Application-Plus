@@ -1,6 +1,6 @@
 #!perl -w
 ; use strict
-; use Test::More tests => 7
+; use Test::More tests => 6
 ; use CGI
 ; use CGI::Application::Plus::Util
 
@@ -20,11 +20,11 @@
 
 ; my $ap2 = ApplPlus2->new()
 ; my $o2 = $ap2->run()
-; ok($o2 =~ /MM/)
+ ; ok($o2 =~ /MM/)
 
-; my $ap3 = ApplPlus3->new( query => CGI->new({ rm => 'mm' }) )
-; my $o3 = eval { $ap3->run() }
-; ok($@)
+#; my $ap3 = ApplPlus3->new( query => CGI->new({ rm => 'mm' }) )
+#; my $o3 = eval { $ap3->run() }
+#; ok($@)
 
 ####### SWITCH TO ##########
 

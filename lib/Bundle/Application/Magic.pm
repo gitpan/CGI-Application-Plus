@@ -1,3 +1,4 @@
+use strict ;
 ; package Bundle::Application::Magic
 
 __END__

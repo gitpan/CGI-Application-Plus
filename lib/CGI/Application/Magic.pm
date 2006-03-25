@@ -1,5 +1,5 @@
 package CGI::Application::Magic ;
-$VERSION = 1.2 ;
+$VERSION = 1.21 ;
 use strict ;
 
 # This file uses the "Perlish" coding style
@@ -107,9 +107,9 @@ __END__
 
 CGI::Application::Magic - Template based framework for CGI applications
 
-=head1 VERSION 1.2
+=head1 VERSION 1.21
 
-Included in CGI-Application-Plus 1.2 distribution.
+Included in CGI-Application-Plus 1.21 distribution.
 
 The latest versions changes are reported in the F<Changes> file in this distribution.
 

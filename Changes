@@ -1,6 +1,9 @@
 CGI-Application-Plus Latest Versions Changes
 
 
+Version 1.21
+- a few CPANTS fixes
+
 Version 1.2
 - Updated tests and POD to the new OOTools 2 behaviour.
 - A few minor changes
